@@ -1,9 +1,9 @@
-public class Voo{
+public class Trecho{
     private String numeroUnico;
     private String origem;
     private String destino;
     
-    public Voo (String numUnico, String origem, String destino){
+    public Trecho (String numUnico, String origem, String destino){
         this.numeroUnico = numUnico;
         this.destino = destino;
         this.origem = origem;
