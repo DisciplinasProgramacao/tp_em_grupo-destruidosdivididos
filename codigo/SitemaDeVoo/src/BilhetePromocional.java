@@ -1,19 +1,21 @@
-import java.util.ArrayList;
+public class BilhetePromocional implements IDescontavel {
 
-public class BilhetePromocional implements ICalculavel {
-
-  private static final double acrescimoDeVooDireto = 0.1;
-  private static final double percentualCobradoPorConexao = 0.5;
-  private ArrayList<Voo> voos;
   private static final double percentualPago = 0.6;
-  private static final double descontoDePontos = 0.5;
+  private static final double percentualPontosGanhos = 0.5;
+  private static final String tipo = "Bilhete Promocional";
 
-  public double calcularPreco() {
-    
+  @Override
+  public double calcularPreco(double preco) {
+    return 0;
   }
 
-  public int calcularPontosGerados() {
-    
+  @Override
+  public int calcularPontos(int pontos) {
+    return 0;
   }
 
+  @Override
+  public String toString(){
+    return "";
+  }
 }

@@ -1,14 +1,19 @@
 public class Cliente {
 
   private String nome;
-  private int pontosGerados;
+  private int pontos;
 
   public Cliente(String nome){
     this.nome = nome;
-    this.pontosGerados = 0;
+    this.pontos = 0;
   }
 
   public void lancarPontos(int pontos) {
-    this.pontosGerados += pontos;
+    this.pontos += pontos;
+  }
+
+  @Override
+  public String toString(){
+    return "Nome do cliente: " + this.nome + "\nPontos do cliente: " + this.pontos;
   }
 }
