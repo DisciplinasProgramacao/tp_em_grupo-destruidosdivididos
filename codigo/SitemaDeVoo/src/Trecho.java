@@ -1,18 +1,17 @@
-public class Trecho{
-    private String numeroUnico;
-    private String origem;
-    private String destino;
-    
-    public Trecho (String numUnico, String origem, String destino){
-        this.numeroUnico = numUnico;
-        this.destino = destino;
-        this.origem = origem;
-        
-    }
+public class Trecho {
 
-    @Override
+  private String codigo;
+  private String origem;
+  private String destino;
+
+  public Trecho (String codigo, String origem, String destino){
+    this.codigo = codigo;
+    this.origem = origem;
+    this.destino = destino;
+}
+
+  @Override
     public String toString() {
-        return "O voo " + this.numeroUnico + "possui o trajeto de " + this.origem + "-" + this.destino;
+        return "Trecho codigo: " + this.codigo + " / Trajeto: " + this.origem + "/" + this.destino + ".";
     }
-
 }
