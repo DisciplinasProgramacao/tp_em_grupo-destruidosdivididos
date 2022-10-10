@@ -63,12 +63,17 @@ public class Bilhete {
   @Override
   public String toString(){
     this.lancarPontosCliente();
+
     StringBuilder bilhete = new StringBuilder();
+
     bilhete.append(this.cliente.toString() + "\n");
+
     for(Voo voo : voos){
       bilhete.append(voo.toString() + "\n");
     }
+
     bilhete.append(this.tipoDoBilhete.toString());
+    
     return bilhete.toString();
   }
 }
