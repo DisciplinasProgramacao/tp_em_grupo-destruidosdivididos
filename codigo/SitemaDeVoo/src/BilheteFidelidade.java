@@ -11,7 +11,7 @@ public class BilheteFidelidade implements IDescontavel {
 
   @Override
   public int calcularPontos(int pontos) {
-    return pontos * percentualPontosGanhos;
+    return  (int)(pontos * percentualPontosGanhos);
   }
 
   @Override
