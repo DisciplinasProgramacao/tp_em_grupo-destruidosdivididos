@@ -1,2 +1,5 @@
 # Diagramas de classe
-Coloque aqui todas as versões do seu diagrama de classes. Cada versão deve começar com um número de dois dígitos, na ordem crescente.
+* Cada versão começa com um número de dois dígitos, na ordem crescente.
+- [Fase 01](/docs/diagramas/01.png)
+- [Fase 02](/docs/diagramas/02.jpg)
+
