@@ -6,16 +6,18 @@ public class BilheteComum implements IDescontavel {
 
   @Override
   public double calcularPreco(double preco) {
-    return 0;
+        return (preco * percentualPago);
   }
 
   @Override
   public int calcularPontos(int pontos) {
-    return 0;
+    return (int)(pontos * percentualPontosGanhos);
   }
 
   @Override
   public String toString(){
-    return "";
+
+    return tipo + "\n Valor pago: " + percentualPago + "\n Pontos Adquiridos: " + percentualPontosGanhos;
+    
   }
 }
