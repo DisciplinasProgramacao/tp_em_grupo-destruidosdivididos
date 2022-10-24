@@ -1,7 +1,7 @@
 public class BilheteComum implements IDescontavel {
 
-  private static final double percentualPago = 1;
-  private static final double percentualPontosGanhos = 1;
+  private static final double percentualPago = 1d;
+  private static final double percentualPontosGanhos = 1d;
   private static final String tipo = "Bilhete Comum";
 
   @Override

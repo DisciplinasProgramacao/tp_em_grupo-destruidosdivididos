@@ -1,7 +1,7 @@
 public class BilheteFidelidade implements IDescontavel {
 
   private static final double percentualPago = 0d;
-  private static final double percentualPontosGanhos = -1;
+  private static final double percentualPontosGanhos = 0d;
   private static final String tipo = "Bilhete Fidelidade";
 
   @Override

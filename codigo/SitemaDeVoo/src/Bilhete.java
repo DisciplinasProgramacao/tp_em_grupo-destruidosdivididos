@@ -20,8 +20,7 @@ public class Bilhete {
   }
 
   /**
-   * Se na lista de voos houver apenas 1 voo, cobra o valor do voo mais 10%.
-   * Se não, cobra o valor do voo mais caro, mais 50% da soma dos outros voos.
+   * Se na lista de voos houver apenas 1 voo, cobra o valor do voo mais 10%. Se não, cobra o valor do voo mais caro, mais 50% da soma dos outros voos.
    * @return O valor total do bilhete.
    */
   private double calcularPrecoSemDeconto() {
@@ -96,17 +95,14 @@ public class Bilhete {
   @Override
   public String toString(){
     this.lancarPontosCliente();
-
     StringBuilder bilhete = new StringBuilder();
 
     bilhete.append(this.cliente.toString() + "\n");
-
-    for(Voo voo : voos){
+    for(Voo voo : voos)
       bilhete.append(voo.toString() + "\n");
-    }
-
+      
     bilhete.append(this.tipoDoBilhete.toString());
-    
+
     return bilhete.toString();
   }
 }
