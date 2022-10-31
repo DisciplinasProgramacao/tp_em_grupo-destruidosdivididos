@@ -25,7 +25,7 @@ public class Bilhete {
    */
   private double calcularPrecoSemDeconto() {
     if(this.voos.size() == 1)
-      return this.voos.get(0).getValor() * acrescimoDeVooDireto;
+      return this.voos.get(0).getValor() + this.voos.get(0).getValor() * acrescimoDeVooDireto;
 
     int vooMaisCaro = localizarVooMaisCaro();
     double total = 0;
@@ -44,7 +44,7 @@ public class Bilhete {
    * @return A quantidade de pontos gerados.
    */
   private int calcularPontosGeradosSemDesconto() {
-    return (int)(this.calcularPrecoSemDeconto() / 500 * 500);
+    return (int)(this.calcularPrecoSemDeconto() / 500) * 500;
   }
 
     /**
@@ -61,13 +61,6 @@ public class Bilhete {
    */
   public int calcularPontos(){
     return this.tipoDoBilhete.calcularPontos(this.calcularPontosGeradosSemDesconto());
-  }
-
-  /**
-   * Lança os pontos gerados pelo bilhete para o cliente.
-   */
-  private void lancarPontosCliente() {
-    this.cliente.lancarPontos(this.calcularPontos());
   }
 
   /**
@@ -94,7 +87,7 @@ public class Bilhete {
 
   @Override
   public String toString(){
-    this.lancarPontosCliente();
+    this.cliente.lancarPontos(this.calcularPontos());
     StringBuilder bilhete = new StringBuilder();
 
     bilhete.append(this.cliente.toString() + "\n");
