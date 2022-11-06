@@ -16,6 +16,6 @@ public class BilheteFidelidade implements IDescontavel {
 
   @Override
   public String toString(){
-    return tipo + "\n Valor pago: " + percentualPago + "\n Pontos Adquiridos: " + percentualPontosGanhos;
+    return tipo;
   }
 }

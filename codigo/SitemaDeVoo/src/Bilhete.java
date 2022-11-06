@@ -91,10 +91,14 @@ public class Bilhete {
     StringBuilder bilhete = new StringBuilder();
 
     bilhete.append(this.cliente.toString() + "\n");
-    for(Voo voo : voos)
+
+    for(Voo voo : voos){
       bilhete.append(voo.toString() + "\n");
-      
+    }
+    
     bilhete.append(this.tipoDoBilhete.toString());
+    bilhete.append("\nValor pago: " + this.calcularPreco());
+    bilhete.append("\nPontos gerados: " + this.calcularPontos());
 
     return bilhete.toString();
   }

@@ -16,6 +16,6 @@ public class BilhetePromocional implements IDescontavel {
 
   @Override
   public String toString(){
-    return "Informações do" + tipo + "\n Valor pago: " + percentualPago + "\n Pontos Adquiridos: " + percentualPontosGanhos;
+    return tipo;
   }
 }
