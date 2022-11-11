@@ -18,6 +18,6 @@ public class Trecho {
 
   @Override
     public String toString() {
-        return " codigo do trecho: " + this.codigo + ", trajeto: " + this.origem + "/" + this.destino;
+        return "codigo do trecho: " + this.codigo + ", trajeto: " + this.origem + "/" + this.destino;
     }
 }

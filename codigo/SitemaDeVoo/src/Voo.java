@@ -26,6 +26,6 @@ public class Voo {
 
   @Override
   public String toString(){
-    return "Data: " + this.data.dataFormatada() + "," + this.trecho.toString();
+    return "Data: " + this.data.dataFormatada() + ", " + this.trecho.toString();
   }
 }
