@@ -2,8 +2,7 @@ import java.util.ArrayList;
 
 public class Bilhete {
 
-  private IDescontavel tipoDoBilhete;
-  private Cliente cliente;
+  private TipoBilhete tipoDoBilhete;
   private static final double acrescimoDeVooDireto = 0.1;
   private static final double percentualCobradoPorConexao = 0.5;
   private ArrayList<Voo> voos;
@@ -13,9 +12,8 @@ public class Bilhete {
    * @param tipo Tipo de bilhete (Comum, Fidelidade ou Promocional).
    * @param cliente O cliente que está comprando o bilhete.
    */
-  public Bilhete(IDescontavel tipo, Cliente cliente){
+  public Bilhete(TipoBilhete tipo){
     this.tipoDoBilhete = tipo;
-    this.cliente = cliente;
     this.voos = new ArrayList<>();
   }
 
@@ -25,17 +23,15 @@ public class Bilhete {
    */
   private double calcularPrecoSemDeconto() {
     if(this.voos.size() == 1)
-      return this.voos.get(0).getValor() + this.voos.get(0).getValor() * acrescimoDeVooDireto;
+      return this.voos.get(0).valor() + this.voos.get(0).valor() * acrescimoDeVooDireto;
 
-    int vooMaisCaro = localizarVooMaisCaro();
     double total = 0;
-    for(int i = 0; i < voos.size(); i++){
-      if(i != vooMaisCaro)
-        total += voos.get(i).getValor();
-    }
+    this.voos.sort((v1, v2) -> v1.valor() < v2.valor()? 1 : -1);
+    total = voos.get(0).valor();
 
-    total = total * percentualCobradoPorConexao;
-    total = total + voos.get(vooMaisCaro).getValor();
+    for(int i = 1; i < voos.size(); i++)
+      total += voos.get(i).valor() * Bilhete.percentualCobradoPorConexao;
+
     return total;
   }
 
@@ -52,7 +48,7 @@ public class Bilhete {
    * @return O valor que será pago.
    */
   public double calcularPreco(){
-    return this.tipoDoBilhete.calcularPreco(this.calcularPrecoSemDeconto());
+    return this.calcularPrecoSemDeconto() * this.tipoDoBilhete.percentualPago();
   }
 
   /**
@@ -60,7 +56,7 @@ public class Bilhete {
    * @return Os pontos do bilhete.
    */
   public int calcularPontos(){
-    return this.tipoDoBilhete.calcularPontos(this.calcularPontosGeradosSemDesconto());
+    return (int)(this.calcularPontosGeradosSemDesconto() * this.tipoDoBilhete.percentualPontos());
   }
 
   /**
@@ -71,34 +67,13 @@ public class Bilhete {
     this.voos.add(novo);
   }
 
-  /**
-   * Percorre o ArrayList em busca do voo mais caro.
-   * @return O indice do voo mais caro.
-   */
-  private int localizarVooMaisCaro(){
-    int posicao = 0;
-
-    for(int i = 1; i < voos.size(); i++){
-      if(voos.get(i).getValor() > voos.get(posicao).getValor())
-        posicao = i;
-    }
-    return posicao;
-  }
-
   @Override
   public String toString(){
-    this.cliente.lancarPontos(this.calcularPontos());
     StringBuilder bilhete = new StringBuilder();
 
-    bilhete.append(this.cliente.toString() + "\n");
-
-    for(Voo voo : voos){
+    bilhete.append(this.tipoDoBilhete.toString() + ":\nValor: " + this.calcularPreco() + ", Pontos: " + this.calcularPontos() + "\n");
+    for(Voo voo : voos)
       bilhete.append(voo.toString() + "\n");
-    }
-    
-    bilhete.append(this.tipoDoBilhete.toString());
-    bilhete.append("\nValor pago: " + this.calcularPreco());
-    bilhete.append("\nPontos gerados: " + this.calcularPontos());
 
     return bilhete.toString();
   }

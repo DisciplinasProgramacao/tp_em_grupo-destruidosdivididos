@@ -20,12 +20,12 @@ public class Voo {
    * Pega o valor do voo.
    * @return O valor do voo.
    */
-  public double getValor(){
+  public double valor(){
     return this.valor;
   }
 
   @Override
   public String toString(){
-    return "Data: " + this.data.dataFormatada() + "\n" + this.trecho.toString();
+    return "Data: " + this.data.dataFormatada() + "," + this.trecho.toString();
   }
 }

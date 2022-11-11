@@ -9,7 +9,7 @@ public class BilheteTest {
 
     @BeforeEach
     public void init(){
-        this.bilhete = new Bilhete(new BilheteComum(), new Cliente("Luiza"));
+        this.bilhete = new Bilhete(TipoBilhete.COMUM);
         this.voo = new Voo(new Trecho("A1678924", "Belo Horizonte", "Paris"), new Data(1, 11), 1000d);
         this.bilhete.adicionarVoo(this.voo);
         this.voo = new Voo(new Trecho("B2073659", "Paris", "New York"), new Data(1, 11), 850d);
@@ -23,7 +23,7 @@ public class BilheteTest {
 
     @Test
     public void testarCalcularPrecoVooDireto(){
-        Bilhete novoBilhete = new Bilhete(new BilheteComum(), new Cliente("Julio"));
+        Bilhete novoBilhete = new Bilhete(TipoBilhete.COMUM);
         Voo novoVoo = new Voo(new Trecho("A307333", "Barcelona", "Paris"), new Data(1, 11), 1000);
         novoBilhete.adicionarVoo(novoVoo);
         assertEquals(1100, novoBilhete.calcularPreco());
