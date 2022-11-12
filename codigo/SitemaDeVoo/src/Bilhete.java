@@ -2,10 +2,15 @@ import java.util.ArrayList;
 
 public class Bilhete {
 
+  enum EstadoBilhete{
+    VALIDO, EXPIRADO;
+  }
+
   private TipoBilhete tipoDoBilhete;
   private static final double acrescimoDeVooDireto = 0.1;
   private static final double percentualCobradoPorConexao = 0.5;
   private ArrayList<Voo> voos;
+  private EstadoBilhete estado;
 
   /**
    * Cria um bilhete com um tipo e o cliente que vai comprar o bilhete.
@@ -15,6 +20,7 @@ public class Bilhete {
   public Bilhete(TipoBilhete tipo){
     this.tipoDoBilhete = tipo;
     this.voos = new ArrayList<>();
+    this.estado = EstadoBilhete.VALIDO;
   }
 
   /**
@@ -66,6 +72,17 @@ public class Bilhete {
   public void adicionarVoo(Voo novo){
     this.voos.add(novo);
   }
+
+  /**
+   * Remove um voo da lista de voos do bilhete
+   * @param desejado O voo que será removido
+   * @return true: se o voo existir na lista / false: caso não exista
+   */
+  public boolean removerVoo(Voo desejado){
+    return this.voos.remove(desejado);
+  }
+
+  public void atualizarEstado(Data hoje){ }
 
   @Override
   public String toString(){

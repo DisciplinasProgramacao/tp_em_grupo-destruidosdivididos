@@ -4,6 +4,7 @@ public class Cliente {
 
   private String nome;
   private ArrayList<Bilhete> bilhetes;
+  private Acelerador assinatura;
 
   /**
    * Cria um cliente com um nome e um total de pontos que inicia em 0.
@@ -11,6 +12,7 @@ public class Cliente {
    */
   public Cliente(String nome){
     this.nome = nome;
+    this.assinatura = Acelerador.INVALIDO;
     this.bilhetes = new ArrayList<>();
   }
 
@@ -18,8 +20,19 @@ public class Cliente {
     this.bilhetes.add(novo);
   }
 
+  public void mudarAssinatura(Acelerador outra){
+    this.assinatura = outra;
+  }
+
+  public int calcularPontosValidos(){
+    this.conferirBilhetes();
+    return -1;
+  }
+
+  private void conferirBilhetes(){ }
+
   @Override
   public String toString(){
-    return "Nome do cliente: " + this.nome;
+    return "Nome do cliente: " + this.nome + ", assinatura ativa: " + this.assinatura.toString();
   }
 }

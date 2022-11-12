@@ -24,6 +24,14 @@ public class Voo {
     return this.valor;
   }
 
+  /**
+   * Pega a data do voo.
+   * @return A data do voo.
+   */
+  public Data data(){
+    return this.data;
+  }
+
   @Override
   public String toString(){
     return "Data: " + this.data.dataFormatada() + ", " + this.trecho.toString();
