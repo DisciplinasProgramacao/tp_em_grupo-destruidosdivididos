@@ -1,10 +1,12 @@
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class Bilhete {
 
-  enum EstadoBilhete{
-    VALIDO, EXPIRADO;
-  }
+  // enum EstadoBilhete{
+  //   VALIDO, EXPIRADO;
+  // }
 
   private TipoBilhete tipoDoBilhete;
   private static final double acrescimoDeVooDireto = 0.1;
@@ -39,6 +41,10 @@ public class Bilhete {
       total += voos.get(i).valor() * Bilhete.percentualCobradoPorConexao;
 
     return total;
+  }
+
+  public EstadoBilhete getEstado () {
+    return estado;
   }
 
   /**
@@ -82,7 +88,20 @@ public class Bilhete {
     return this.voos.remove(desejado);
   }
 
-  public void atualizarEstado(Data hoje){ }
+  /**
+   * Pega a dta de hoje e subtrai 12 meses, para validar se a data 
+   * do primeiro voo é posterior
+   */
+
+  public EstadoBilhete atualizarEstado(){
+    Calendar dateHoje = Calendar.getInstance();
+    Calendar dateVoo = voos.get(0).convertedData();
+    dateHoje.add(Calendar.MONTH, -12);
+    if (dateVoo.after(dateHoje)) {
+      this.estado = EstadoBilhete.EXPIRADO;
+    }
+    return this.estado;
+   }
 
   @Override
   public String toString(){

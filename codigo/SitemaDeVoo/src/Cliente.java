@@ -2,6 +2,7 @@ import java.util.ArrayList;
 
 public class Cliente {
 
+
   private String nome;
   private ArrayList<Bilhete> bilhetes;
   private Acelerador assinatura;
@@ -26,10 +27,18 @@ public class Cliente {
 
   public int calcularPontosValidos(){
     this.conferirBilhetes();
-    return -1;
+    return this.conferirBilhetes();
   }
 
-  private void conferirBilhetes(){ }
+  private int conferirBilhetes(){
+    int aux = 0;
+    for(int i=0; i < bilhetes.size();i++) {
+      if (bilhetes.get(i).getEstado() == EstadoBilhete.VALIDO) {
+        aux = aux + bilhetes.get(i).calcularPontos();
+      }
+    }
+    return aux;
+   }
 
   @Override
   public String toString(){
