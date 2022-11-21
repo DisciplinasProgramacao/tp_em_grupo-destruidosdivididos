@@ -1,7 +1,7 @@
 public enum Acelerador {
     INVALIDO("Sem multiplicador", 0, 0),
-    PRATA("Prata", 1.25, 0),
-    PRETO("Preto", 1.5, 0);
+    PRATA("Prata", 1.25, 100),
+    PRETO("Preto", 1.5, 150);
 
     private final String tipo;
     private final double multiplicador;

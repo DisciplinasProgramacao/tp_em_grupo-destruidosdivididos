@@ -35,7 +35,11 @@ public class BilheteTest {
     }
 
     @Test
-    public void testarEstadi(){
-        assertEquals(EstadoBilhete.VALIDO, this.bilhete.atualizarEstado());
+    public void testarAtualizarEstado(){
+        Bilhete novoBilhete = new Bilhete(TipoBilhete.COMUM);
+        Voo novoVoo = new Voo(new Trecho("A307333", "Barcelona", "Paris"), "20/07/2021", 800);
+        novoBilhete.adicionarVoo(novoVoo);
+        novoBilhete.atualizarEstado();
+        assertEquals(EstadoBilhete.EXPIRADO, novoBilhete.estado());
     }
 }

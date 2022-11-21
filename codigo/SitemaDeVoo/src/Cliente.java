@@ -25,23 +25,40 @@ public class Cliente {
     this.bilhetes.add(novo);
   }
 
+  /**
+   * Muda o nível da assinatura do cliente
+   * @param outra A nova assinatura
+   */
   public void mudarAssinatura(Acelerador outra){
     this.assinatura = outra;
   }
 
+  /**
+   * Percorre a lista de bilhetes do cliente, somando os pontos dos bilhetes válidos
+   * @return Os pontos válidos
+   */
   public int calcularPontosValidos(){
     this.conferirBilhetes();
-    return this.conferirBilhetes();
+    int pontos = this.bilhetes.stream()
+                              .filter(bilhete -> bilhete.estado() == EstadoBilhete.VALIDO)
+                              .mapToInt(Bilhete::calcularPontos)
+                              .sum();
+    
+    return (int)(pontos * this.assinatura.multiplicador());
   }
 
-  private int conferirBilhetes(){
-    int aux = 0;
-    for(int i=0; i < bilhetes.size();i++) {
-      if (bilhetes.get(i).getEstado() == EstadoBilhete.VALIDO) {
-        aux = aux + bilhetes.get(i).calcularPontos();
-      }
-    }
-    return aux;
+  /**
+   * Percorre a lista de bilhetes do cliente, atualizando o estado de todos os bilhetes
+   */
+  private void conferirBilhetes(){
+    // int aux = 0;
+    // for(int i=0; i < bilhetes.size();i++) {
+    //   if (bilhetes.get(i).getEstado() == EstadoBilhete.VALIDO) {
+    //     aux = aux + bilhetes.get(i).calcularPontos();
+    //   }
+    // }
+    // return aux;
+    this.bilhetes.forEach(bilhete -> bilhete.atualizarEstado());
    }
 
   @Override

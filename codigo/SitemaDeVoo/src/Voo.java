@@ -1,9 +1,12 @@
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class Voo {
 
+  private static final String pattern = "dd-MM-yyyy";
+  private static final SimpleDateFormat formatoData = new SimpleDateFormat(pattern);
   private Trecho trecho;
-  private String data;
+  private Calendar data;
   private double valor;
 
   /**
@@ -12,9 +15,9 @@ public class Voo {
    * @param data A data do voo.
    * @param valor O valor do voo.
    */
-  public Voo(Trecho novo, String data, double valor){
+  public Voo(Trecho novo, String novaData, double valor){
     this.trecho = novo;
-    this.data = data;
+    this.data = tratarData(novaData);
     this.valor = valor;
   }
 
@@ -26,24 +29,30 @@ public class Voo {
     return this.valor;
   }
 
-  public java.util.Calendar convertedData() {
-    String[] dataSeparada = this.data.split("/");
-    Calendar dataFormattedCalendar = Calendar.getInstance();
-    dataFormattedCalendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dataSeparada[0]));
-    dataFormattedCalendar.set(Calendar.MONTH, Integer.parseInt(dataSeparada[1]) - 1);
-    dataFormattedCalendar.set(Calendar.YEAR, Integer.parseInt(dataSeparada[2]));
-    return dataFormattedCalendar;
+  /**
+   * Recebe a data como String, e trata para Calendar
+   * @param novaData A data que sera tratada
+   * @return A data como Calendar
+   */
+  private java.util.Calendar tratarData(String novaData) {
+    String[] dataSeparada = novaData.split("/");
+    Calendar dataFormatedCalendar = Calendar.getInstance();
+    dataFormatedCalendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dataSeparada[0]));
+    dataFormatedCalendar.set(Calendar.MONTH, Integer.parseInt(dataSeparada[1]) - 1);
+    dataFormatedCalendar.set(Calendar.YEAR, Integer.parseInt(dataSeparada[2]));
+    return dataFormatedCalendar;
   }
+
   /**
    * Pega a data do voo.
    * @return A data do voo.
    */
-  public String data(){
+  public Calendar data(){
     return this.data;
   }
 
   @Override
   public String toString(){
-    return "Data: " + this.data + ", " + this.trecho.toString();
+    return "Data: " + Voo.formatoData.format(this.data.getTime()) + ", " + this.trecho.toString();
   }
 }

@@ -1,12 +1,9 @@
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class Bilhete {
-
-  // enum EstadoBilhete{
-  //   VALIDO, EXPIRADO;
-  // }
 
   private TipoBilhete tipoDoBilhete;
   private static final double acrescimoDeVooDireto = 0.1;
@@ -33,18 +30,28 @@ public class Bilhete {
     if(this.voos.size() == 1)
       return this.voos.get(0).valor() + this.voos.get(0).valor() * acrescimoDeVooDireto;
 
-    double total = 0;
-    this.voos.sort((v1, v2) -> v1.valor() < v2.valor()? 1 : -1);
-    total = voos.get(0).valor();
+    int maisCaro = this.vooMaisCaro();
+    double total = voos.get(maisCaro).valor();
 
-    for(int i = 1; i < voos.size(); i++)
-      total += voos.get(i).valor() * Bilhete.percentualCobradoPorConexao;
+    for(int i = 0; i < voos.size(); i++){
+      if(i != maisCaro)
+        total += voos.get(i).valor() * Bilhete.percentualCobradoPorConexao;
+    }
 
     return total;
   }
 
-  public EstadoBilhete getEstado () {
-    return estado;
+  public EstadoBilhete estado() {
+    return this.estado;
+  }
+
+  private int vooMaisCaro(){
+    int maisCaro = 0;
+    for(int i = 1; i < voos.size(); i++){
+      if(voos.get(i).valor() > voos.get(maisCaro).valor())
+        maisCaro = i;
+    }
+    return maisCaro;
   }
 
   /**
@@ -92,16 +99,15 @@ public class Bilhete {
    * Pega a dta de hoje e subtrai 12 meses, para validar se a data 
    * do primeiro voo é posterior
    */
-
-  public EstadoBilhete atualizarEstado(){
-    Calendar dateHoje = Calendar.getInstance();
-    Calendar dateVoo = voos.get(0).convertedData();
-    dateHoje.add(Calendar.MONTH, -12);
-    if (dateVoo.after(dateHoje)) {
+  public void atualizarEstado(){
+    Locale brasil = new Locale("pt", "BR");
+    Calendar dataLimite = Calendar.getInstance(TimeZone.getTimeZone("GMT-3"), brasil);
+    Calendar dataVoo = voos.get(0).data();
+    dataLimite.add(Calendar.MONTH, -12);
+    if (dataVoo.before(dataLimite)) {
       this.estado = EstadoBilhete.EXPIRADO;
     }
-    return this.estado;
-   }
+  }
 
   @Override
   public String toString(){
