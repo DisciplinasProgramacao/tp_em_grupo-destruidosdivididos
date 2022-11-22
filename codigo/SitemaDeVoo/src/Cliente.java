@@ -47,6 +47,17 @@ public class Cliente {
     return (int)(pontos * this.assinatura.multiplicador());
   }
 
+   /**
+   * Percorre a lista de bilhetes do cliente, somando o valor de cada bilhete
+   */
+  public double calcularTotalDosBilhetes(){
+    double total = this.bilhetes.stream()
+                              .mapToDouble(Bilhete::calcularPreco)
+                              .sum();
+    return total;
+  }
+
+
   /**
    * Percorre a lista de bilhetes do cliente, atualizando o estado de todos os bilhetes
    */

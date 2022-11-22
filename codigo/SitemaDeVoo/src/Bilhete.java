@@ -45,6 +45,7 @@ public class Bilhete {
     return this.estado;
   }
 
+
   private int vooMaisCaro(){
     int maisCaro = 0;
     for(int i = 1; i < voos.size(); i++){
