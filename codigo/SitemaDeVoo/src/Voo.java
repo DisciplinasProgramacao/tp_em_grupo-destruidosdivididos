@@ -29,6 +29,7 @@ public class Voo {
     return this.valor;
   }
 
+
   /**
    * Recebe a data como String, e trata para Calendar
    * @param novaData A data que sera tratada

@@ -57,6 +57,14 @@ public class Cliente {
     return total;
   }
 
+  public double calcularTotalDosBilhetesBaseadoNoMes(int mes){
+    double total = this.bilhetes.stream()
+                              .filter(bilhete -> bilhete.getMonthDataVoo() == mes)
+                              .mapToDouble(Bilhete::calcularPreco)
+                              .sum();
+    return total;
+  }
+
 
   /**
    * Percorre a lista de bilhetes do cliente, atualizando o estado de todos os bilhetes
