@@ -24,21 +24,15 @@ public class App {
     
     public static void carregarTrechos() throws FileNotFoundException {
         Scanner arquivo = new Scanner(new File(arquivoDeTrechos));
-
         while (arquivo.hasNextLine()) {
-
             ArrayList<String> dados = new ArrayList<>(Arrays.asList(arquivo.nextLine().split(";"))); // criando um arraylist ja separando os dados do txt
-
             ArrayList<Trecho> trechos = new ArrayList<>(50);
-
             String codigo = (dados.get(0));
             String origem = (dados.get(1));
             String destino = (dados.get(2));
-
             Trecho novo = new Trecho(codigo, origem, destino);
             trechos.add(novo);
         }
-
         arquivo.close();
     }
 
