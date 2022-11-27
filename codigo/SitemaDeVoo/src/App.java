@@ -1,4 +1,7 @@
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class App {
@@ -9,7 +12,7 @@ public class App {
     public static ArrayList<Trecho> trechos = new ArrayList<>(100);
     public static ArrayList<Voo> voos = new ArrayList<>(100);
     public static ArrayList<Bilhete> bilhetes = new ArrayList<>(100);
-    public static final String trechos = "trechos.txt";
+    public static final String arquivoDeTrechos = "trechos.txt";
 
     /**
      * limpa o console
@@ -20,7 +23,7 @@ public class App {
     }
     
     public static void carregarTrechos() throws FileNotFoundException {
-        Scanner arquivo = new Scanner(new File(trechos));
+        Scanner arquivo = new Scanner(new File(arquivoDeTrechos));
 
         while (arquivo.hasNextLine()) {
 
