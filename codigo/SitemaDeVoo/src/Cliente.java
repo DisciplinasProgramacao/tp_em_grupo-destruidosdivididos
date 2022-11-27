@@ -17,29 +17,26 @@ public class Cliente {
     this.bilhetes = new ArrayList<>();
   }
 
+  public boolean verificaArray(ArrayList<Cliente> clientes){
+    return clientes.isEmpty();
+  }
+
   /**
    * verificar se um cliente existe cadastrado para trazer seus dados
+   * 
    * @param clientes lista de clientes existentes
-   * @param nome do buscado
-   * @return o cliente solicitado 
+   * @param nome     do buscado
+   * @return o cliente solicitado
    */
   public Cliente verificaCliente(ArrayList<Cliente> clientes, String nome) {
-
-    Cliente busca = null;
-    // consultar dados do cliente
-    boolean verifica = clientes.isEmpty();
-    
-    if (!verifica) {
+    if (!verificaArray(clientes)) {
       for (Cliente cliente : clientes) {
-          if (this.nome.equals(cliente.nome)) {
-            busca = cliente;
-            return busca;          
+        if (nome.equals(cliente.nome)) {
+          return cliente;
         }
       }
-    } else 
-      System.out.println("\nNão há clientes cadastrados.");
-    
-    return busca;
+    } 
+    return null;
   }
 
   /**
@@ -99,7 +96,7 @@ public class Cliente {
    * bilhetes
    */
   private void conferirBilhetes() {
-      this.bilhetes.forEach(bilhete -> bilhete.atualizarEstado());
+    this.bilhetes.forEach(bilhete -> bilhete.atualizarEstado());
   }
 
   @Override
