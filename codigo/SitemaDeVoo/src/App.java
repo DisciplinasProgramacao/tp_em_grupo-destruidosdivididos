@@ -7,6 +7,8 @@ import java.util.Scanner;
 public class App {
 
     public static final String trechos = "trechos.txt";
+    static ArrayList<Cliente> clientes = new ArrayList<>(100);
+    static Cliente buscado = new Cliente("");
 
     /**
      * limpa o console
@@ -22,7 +24,7 @@ public class App {
      * @param teclado ler do teclado
      */
     public static void pausar(Scanner teclado) {
-        System.out.print("Tecle ENTER para continuar. ");
+        System.out.print("\n Tecle ENTER para continuar. \n");
         teclado.nextLine();
     }
 
@@ -116,7 +118,7 @@ public class App {
      * @return a resposta do usuario
      */
     public static String lerTeclado(String mensagem, Scanner teclado) {
-        System.out.print(mensagem + " ");
+        System.out.print("\n" + mensagem + " ");
         return teclado.nextLine();
     }
 
@@ -131,6 +133,8 @@ public class App {
 
             switch (opcao) { // switch menu principal
                 case 1:
+                do {
+                
                     limparTela();
                     op = menuCliente(teclado);
 
@@ -141,7 +145,9 @@ public class App {
                             String nome = lerTeclado("Insira o nome do novo cliente:    ", teclado);
 
                             Cliente novo = new Cliente(nome);
-                            System.out.println(novo.toString() + "\n");
+                            clientes.add(novo);
+
+                            System.out.println("Confirmação de dados:\n" + novo.toString() + "\n");
                             pausar(teclado);
 
                             break;
@@ -151,9 +157,8 @@ public class App {
 
                             String nomeCliente = lerTeclado(
                                     "Digite o nome do cliente que deseja consultar o total de bilhetes: ", teclado);
-                            Cliente buscado;
-                            
-                            if (buscado.verificaCliente(nomeCliente)!=null)
+
+                            if (buscado.verificaCliente(clientes, nomeCliente) != null)
                                 System.out.println(String.format("%.2f", buscado.calcularTotalDosBilhetes()));
 
                             else
@@ -163,24 +168,29 @@ public class App {
 
                             break;
 
-                            case 3:
+                        case 3:
                             limparTela();
                             break;
 
-                            case 4:
+                        case 4:
                             limparTela();
 
                             break;
-
-
 
                         default:
-                            break;
-                    }
+                        limparTela();
+                            System.out.println("Opção inválida, tente novamente");
+                        pausar(teclado);
 
+                            break;
+                        } 
+                    } while (op != 0);
                     break;
 
                 default:
+                limparTela();
+                System.out.println("Opção inválida, tente novamente");
+                pausar(teclado);
                     break;
             }
 
