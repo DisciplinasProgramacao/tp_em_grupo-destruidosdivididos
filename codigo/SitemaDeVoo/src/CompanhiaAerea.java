@@ -30,6 +30,11 @@ public class CompanhiaAerea {
     return total;
   }
 
+    /**
+   * Método com erro. Problema não identificado. Precisa de atenção e documentação. 
+   * @param mes
+   * @return valor total de alguma coisa arrecadada no mês > pontos? bilhetes? financeiro?
+   */
   public double calcularTotalArrecadoBaseadoNoMes(int mes){
     double total = this.clientes.stream()
                               .mapToDouble(Cliente::calcularTotalDosBilhetesBaseadoNoMes)
