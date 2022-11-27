@@ -1,0 +1,22 @@
+BHZSP3111;Belo Horizonte;São Paulo
+SPNAT1184;São Paulo;Natal
+RJBHZ2131;Rio de Janeiro;Belo Horizonte
+GOREC6481;Goiânia;Recife
+POAVI5127;Porto Alegre;Vitória
+SAVSP7511;Salvador;São Paulo
+SPJFK1212;São Paulo;Nova Iorque
+BHZBC3120;Belo Horizonte;Washington
+MIAYY1314;Miami;Toronto
+FLMEX4852;Florianópolis;Cidade do México
+JFKMI1213;Nova Iorque;Miami
+SPBHZ1131;São Paulo;Belo Horizonte
+NATSP8411;Natal;São Paulo
+BHZRJ3121;Belo Horizonte;Rio de Janeiro
+RECGO8164;Recife;Goiânia
+VIPOA2751;Vitória;Porto Alegre
+SPSAV1175;São Paulo;Salvador
+JFKSP1212;Nova Iorque;São Paulo
+BCBHZ2031;Washington;Belo Horizonte
+YYMIA1413;Toronto;Miami
+MEXFL5248;Cidade do México;Florianópolis
+MIJFK1312;Miami;Nova Iorque
