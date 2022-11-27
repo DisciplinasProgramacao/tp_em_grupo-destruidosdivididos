@@ -1,6 +1,12 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class App {
+
+    public static final String trechos = "trechos.txt";
 
     /**
      * limpa o console
@@ -11,7 +17,41 @@ public class App {
     }
 
     /**
+     * pausa ate o usuario pressionar enter
+     * 
+     * @param teclado ler do teclado
+     */
+    public static void pausar(Scanner teclado) {
+        System.out.print("Tecle ENTER para continuar. ");
+        teclado.nextLine();
+    }
+
+    public static void carregarTrechos() throws FileNotFoundException {
+        Scanner arquivo = new Scanner(new File(trechos));
+
+        while (arquivo.hasNextLine()) {
+
+            ArrayList<String> dados = new ArrayList<>(Arrays.asList(arquivo.nextLine().split(";"))); // criando um
+                                                                                                     // arraylist ja
+                                                                                                     // separando os
+                                                                                                     // dados do txt
+
+            ArrayList<Trecho> trechos = new ArrayList<>(50);
+
+            String codigo = (dados.get(0));
+            String origem = (dados.get(1));
+            String destino = (dados.get(2));
+
+            Trecho novo = new Trecho(codigo, origem, destino);
+            trechos.add(novo);
+        }
+
+        arquivo.close();
+    }
+
+    /**
      * primeiro menu do programa
+     * 
      * @param teclado ler do teclado
      * @return a opcao que o cliente digitou
      */
@@ -24,10 +64,10 @@ public class App {
         System.out.println("1) Opções do Cliente");
         System.out.println("2) Opções do bilhete");
         System.out.println("3) Opções do voo");
-        //System.out.println("");
+        // System.out.println("");
 
         int opcao = Integer.parseInt(teclado.nextLine());
-        return opcao; 
+        return opcao;
     }
 
     public static int menuCliente(Scanner teclado) {
@@ -70,6 +110,7 @@ public class App {
 
     /**
      * le do teclado
+     * 
      * @param mensagem o que vc deseja que o usuario te informe
      * @param teclado  ler do teclado
      * @return a resposta do usuario
@@ -88,41 +129,60 @@ public class App {
             limparTela();
             opcao = menuPrincipal(teclado);
 
-            switch (opcao) {                       //switch menu principal
+            switch (opcao) { // switch menu principal
                 case 1:
-                limparTela();
-                op = menuCliente(teclado);
+                    limparTela();
+                    op = menuCliente(teclado);
 
-                    switch (op) {                  //switch sub menu
+                    switch (op) { // switch sub menu
                         case 1:
-                        limparTela();
-                        System.out.println();
-                        String nome = lerTeclado("Insira o nome do novo cliente: \n", teclado);
-                        Cliente novo = new Cliente(nome);
-                        System.out.println("Cliente " + nome + "cadastrado com sucesso!");   //não ta executando
-                        //novo.toString();
-                        
-                        break;
+                            limparTela();
+                            System.out.println();
+                            String nome = lerTeclado("Insira o nome do novo cliente:    ", teclado);
+
+                            Cliente novo = new Cliente(nome);
+                            System.out.println(novo.toString() + "\n");
+                            pausar(teclado);
+
+                            break;
 
                         case 2:
-                         limparTela();
-                        //Cliente nomeCliente = lerTeclado("Digite o nome do cliente que deseja consultar o total de bilhetes: ", teclado);
-                    
+                            limparTela();
 
-                        break;
+                            String nomeCliente = lerTeclado(
+                                    "Digite o nome do cliente que deseja consultar o total de bilhetes: ", teclado);
+                            Cliente buscado;
+                            
+                            if (buscado.verificaCliente(nomeCliente)!=null)
+                                System.out.println(String.format("%.2f", buscado.calcularTotalDosBilhetes()));
 
-                    
+                            else
+                                System.out.println("Cliente não localizado!");
+
+                            pausar(teclado);
+
+                            break;
+
+                            case 3:
+                            limparTela();
+                            break;
+
+                            case 4:
+                            limparTela();
+
+                            break;
+
+
+
                         default:
                             break;
                     }
 
-                    
                     break;
-            
+
                 default:
                     break;
             }
-
 
         } while (opcao != 0);
 
