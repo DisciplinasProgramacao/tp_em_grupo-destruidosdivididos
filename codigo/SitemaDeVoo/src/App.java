@@ -8,6 +8,7 @@ public class App {
     public static ArrayList<Trecho> trechos = new ArrayList<>(100);
     public static ArrayList<Voo> voos = new ArrayList<>(100);
     public static ArrayList<Bilhete> bilhetes = new ArrayList<>(100);
+    public static final String trechos = "trechos.txt";
 
     /**
      * limpa o console
@@ -16,6 +17,27 @@ public class App {
         System.out.print("\033[H\033[2J");
         System.out.flush();
     }
+    
+    public static void carregarTrechos() throws FileNotFoundException {
+        Scanner arquivo = new Scanner(new File(trechos));
+
+        while (arquivo.hasNextLine()) {
+
+            ArrayList<String> dados = new ArrayList<>(Arrays.asList(arquivo.nextLine().split(";"))); // criando um arraylist ja separando os dados do txt
+
+            ArrayList<Trecho> trechos = new ArrayList<>(50);
+
+            String codigo = (dados.get(0));
+            String origem = (dados.get(1));
+            String destino = (dados.get(2));
+
+            Trecho novo = new Trecho(codigo, origem, destino);
+            trechos.add(novo);
+        }
+
+        arquivo.close();
+    }
+
 
     /**
      * primeiro menu do programa
