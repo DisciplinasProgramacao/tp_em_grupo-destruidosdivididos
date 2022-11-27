@@ -35,6 +35,10 @@ public class App {
         System.out.println("0) Sair");
         System.out.print("Digite a opção desejada:  ");
 
+          /**
+         * Tratando erro excção NumberFormatException para caso de digitação de letras
+         * na entrada de numeros
+         */
         try {
             int opcao = Integer.parseInt(teclado.nextLine());
             do {
@@ -71,6 +75,7 @@ public class App {
      * > consulta de bilhetes de um cliente
      * > consulta de pontos de um cliente
      * > contratação de acelerador de pontos para um cliente
+     * 
      * @param teclado lê opcão desejada pelo usuário
      */
     public static void menuCliente(Scanner teclado) {
@@ -83,6 +88,10 @@ public class App {
         System.out.println("0) Voltar");
         System.out.print("Digite a opção desejada:  ");
 
+          /**
+         * Tratando erro excção NumberFormatException para caso de digitação de letras
+         * na entrada de numeros
+         */
         try {
             int opcao = Integer.parseInt(teclado.nextLine());
             do {
@@ -121,7 +130,7 @@ public class App {
 
                         break;
                     case 4:
-                    
+
                         break;
                     default:
                         System.out.println("Opção inválida. Tente novamente.");
@@ -142,6 +151,7 @@ public class App {
      * > consulta voos de um bilhete
      * > inclui novo voo ao bilhete
      * > remove tudos os bilhetes (isso exclui o bilhete mesmo?)
+     * 
      * @param teclado lê opcão desejada pelo usuário
      */
     public static void menuBilhete(Scanner teclado) {
@@ -154,6 +164,10 @@ public class App {
         System.out.println("0) Voltar");
         System.out.print("Digite a opção desejada:  ");
 
+          /**
+         * Tratando erro excção NumberFormatException para caso de digitação de letras
+         * na entrada de numeros
+         */
         try {
             int opcao = Integer.parseInt(teclado.nextLine());
             do {
@@ -192,6 +206,7 @@ public class App {
      * > consulta voos de um bilhete
      * > inclui um novo voo (aonde?)
      * > remove um voo (de onde?)
+     * 
      * @param teclado lê opcão desejada pelo usuário
      */
     public static void menuVoo(Scanner teclado) {
@@ -204,6 +219,10 @@ public class App {
         System.out.println("0) Voltar");
         System.out.print("Digite a opção desejada:  ");
 
+        /**
+         * Tratando erro excção NumberFormatException para caso de digitação de letras
+         * na entrada de numeros
+         */
         try {
             int opcao = Integer.parseInt(teclado.nextLine());
             do {
