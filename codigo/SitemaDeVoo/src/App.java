@@ -2,7 +2,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class App {
-    static Cliente user = new Cliente("");
+    static int opcao = 0;
+    static Cliente user;
     static Scanner teclado = new Scanner(System.in);
     public static ArrayList<Cliente> clientes = new ArrayList<>(100);
     public static ArrayList<Trecho> trechos = new ArrayList<>(100);
@@ -23,25 +24,24 @@ public class App {
      * @param teclado ler do teclado
      * @return a opcao que o cliente digitou
      */
-    public static void menuPrincipal(Scanner teclado) {
-        System.out.println(" __________________________________________________");
-        System.out.println("|                 Xulambs Airlines                 |");
-        System.out.println("|          Voe conosco e viva uma aventura         |");
-        System.out.println("|__________________________________________________|\n\n");
+    public static void menuPrincipal() {
+        do {
+            System.out.println(" __________________________________________________");
+            System.out.println("|                 Xulambs Airlines                 |");
+            System.out.println("|          Voe conosco e viva uma aventura         |");
+            System.out.println("|__________________________________________________|\n\n");
 
-        System.out.println("1) Opções do Cliente");
-        System.out.println("2) Opções do bilhete");
-        System.out.println("3) Opções do voo");
-        System.out.println("0) Sair");
-        System.out.print("Digite a opção desejada:  ");
-
-          /**
-         * Tratando erro excção NumberFormatException para caso de digitação de letras
-         * na entrada de numeros
-         */
-        try {
-            int opcao = Integer.parseInt(teclado.nextLine());
-            do {
+            System.out.println("1) Opções do Cliente");
+            System.out.println("2) Opções do bilhete");
+            System.out.println("3) Opções do voo");
+            System.out.println("0) Sair");
+            System.out.print("Digite a opção desejada:  ");
+            /**
+             * Tratando erro excção NumberFormatException para caso de digitação de letras
+             * na entrada de numeros
+             */
+            try {
+                int opcao = Integer.parseInt(teclado.nextLine());
                 switch (opcao) {
                     case 0:
                         limparTela();
@@ -49,24 +49,23 @@ public class App {
                         System.exit(0);
                         break;
                     case 1:
-                        menuCliente(teclado);
+                        menuCliente();
                         break;
                     case 2:
                         break;
                     case 3:
                         break;
-
                     default:
                         System.out.println("Opção inválida. Tente novamente.");
-                        menuPrincipal(teclado);
+                        menuPrincipal();
                         break;
                 }
-            } while (opcao != 0);
-        } catch (NumberFormatException e) {
-            limparTela();
-            System.err.println("Formato de entrada não é válido. Tente novamente");
-            menuPrincipal(teclado);
-        }
+            } catch (NumberFormatException e) {
+                limparTela();
+                System.err.println("Formato de entrada não é válido. Tente novamente");
+                menuPrincipal();
+            }
+        } while (opcao != 0);
     }
 
     /**
@@ -78,36 +77,36 @@ public class App {
      * 
      * @param teclado lê opcão desejada pelo usuário
      */
-    public static void menuCliente(Scanner teclado) {
-        System.out.println("\nOPÇÕES REFERENTES AO CLIENTE");
-        System.out.println("==============================================\n");
-        System.out.println("1) Cadastrar novo cliente");
-        System.out.println("2) Consultar total de bilhetes");
-        System.out.println("3) Consultar pontos");
-        System.out.println("4) Contratar acelerador de pontos");
-        System.out.println("0) Voltar");
-        System.out.print("Digite a opção desejada:  ");
-
-          /**
-         * Tratando erro excção NumberFormatException para caso de digitação de letras
-         * na entrada de numeros
-         */
-        try {
-            int opcao = Integer.parseInt(teclado.nextLine());
-            do {
+    public static void menuCliente() {
+        do {
+            System.out.println("\nOPÇÕES REFERENTES AO CLIENTE");
+            System.out.println("==============================================\n");
+            System.out.println("1) Cadastrar novo cliente");
+            System.out.println("2) Consultar total de bilhetes");
+            System.out.println("3) Consultar pontos");
+            System.out.println("4) Contratar acelerador de pontos");
+            System.out.println("0) Voltar");
+            System.out.print("Digite a opção desejada:  ");
+            /**
+             * Tratando erro exceção NumberFormatException para caso de digitação de letras
+             * na entrada de numeros
+             */
+            try {
+                opcao = Integer.parseInt(teclado.nextLine());
                 switch (opcao) {
                     case 0:
-                        menuPrincipal(teclado);
+                        menuPrincipal();
                         break;
                     case 1:
-                        System.out.println();
                         String nome = lerTeclado("Insira o nome do novo cliente:    ", teclado);
-                        Cliente novo = new Cliente(nome);
-                        clientes.add(novo);
-                        if (!clientes.isEmpty()) {
+                        if (nome != null && nome != "" && nome != " ") {
+                            user = new Cliente(nome);
+                            clientes.add(user);
                             System.out.println(
-                                    "Confirmação de Cadastro:\n" + novo.toString()
+                                    "Confirmação de Cadastro:\n" + user.toString()
                                             + "\nCadastrado com sucesso!\n");
+                        } else {
+                            System.out.println("Nome do cliente não pode estar vazio. Digite um nome válido.");
                         }
                         break;
                     case 2:
@@ -117,7 +116,7 @@ public class App {
                                     teclado);
                             user = user.verificaCliente(clientes, nomeCliente);
                             if (user != null) {
-                                System.out.println("Cliente: " + nomeCliente + "Pontos: "
+                                System.out.println("Cliente: " + nomeCliente + " Total de Bilhetes: "
                                         + String.format("%.2f", user.calcularTotalDosBilhetes()) + "\n");
                             } else {
                                 System.out.println("Cliente não encontrado!");
@@ -134,15 +133,16 @@ public class App {
                         break;
                     default:
                         System.out.println("Opção inválida. Tente novamente.");
-                        menuCliente(teclado);
+                        // menuCliente(teclado);
                         break;
                 }
-            } while (opcao != 0);
-        } catch (NumberFormatException e) {
-            limparTela();
-            System.err.println("Formato de entrada não é válido. Tente novamente");
-            menuPrincipal(teclado);
-        }
+            } catch (NumberFormatException e) {
+                limparTela();
+                System.err.println("Formato de entrada não é válido. Tente novamente");
+                menuCliente();
+            }
+        } while (opcao != 0);
+
     }
 
     /**
@@ -154,50 +154,51 @@ public class App {
      * 
      * @param teclado lê opcão desejada pelo usuário
      */
-    public static void menuBilhete(Scanner teclado) {
-        System.out.println("\nOPÇÕES REFERENTES AO BILHETE");
-        System.out.println("==============================================\n");
-        System.out.println("1) Cadastrar novo bilhete");
-        System.out.println("2) Consultar voos do bilhete");
-        System.out.println("3) incluir novo voo");
-        System.out.println("4) Remover Voo");
-        System.out.println("0) Voltar");
-        System.out.print("Digite a opção desejada:  ");
+    public static void menuBilhete() {
+        do {
+            System.out.println("\nOPÇÕES REFERENTES AO BILHETE");
+            System.out.println("==============================================\n");
+            System.out.println("1) Cadastrar novo bilhete");
+            System.out.println("2) Consultar voos do bilhete");
+            System.out.println("3) incluir novo voo");
+            System.out.println("4) Remover Voo");
+            System.out.println("0) Voltar");
+            System.out.print("Digite a opção desejada:  ");
+            /**
+             * Tratando erro excção NumberFormatException para caso de digitação de letras
+             * na entrada de numeros
+             */
+            try {
+                int opcao = Integer.parseInt(teclado.nextLine());
+                do {
+                    switch (opcao) {
+                        case 0:
+                            menuPrincipal();
+                            break;
+                        case 1:
 
-          /**
-         * Tratando erro excção NumberFormatException para caso de digitação de letras
-         * na entrada de numeros
-         */
-        try {
-            int opcao = Integer.parseInt(teclado.nextLine());
-            do {
-                switch (opcao) {
-                    case 0:
-                        menuPrincipal(teclado);
-                        break;
-                    case 1:
+                            break;
+                        case 2:
 
-                        break;
-                    case 2:
+                            break;
+                        case 3:
 
-                        break;
-                    case 3:
+                            break;
+                        case 4:
 
-                        break;
-                    case 4:
-
-                        break;
-                    default:
-                        System.out.println("Opção inválida. Tente novamente.");
-                        menuBilhete(teclado);
-                        break;
-                }
-            } while (opcao != 0);
-        } catch (NumberFormatException e) {
-            limparTela();
-            System.err.println("Formato de entrada não é válido. Tente novamente");
-            menuPrincipal(teclado);
-        }
+                            break;
+                        default:
+                            System.out.println("Opção inválida. Tente novamente.");
+                            menuBilhete();
+                            break;
+                    }
+                } while (opcao != 0);
+            } catch (NumberFormatException e) {
+                limparTela();
+                System.err.println("Formato de entrada não é válido. Tente novamente");
+                menuBilhete();
+            }
+        } while (opcao != 0);
     }
 
     /**
@@ -209,50 +210,52 @@ public class App {
      * 
      * @param teclado lê opcão desejada pelo usuário
      */
-    public static void menuVoo(Scanner teclado) {
-        System.out.println("\nOPÇÕES REFERENTES AO VOO");
-        System.out.println("==============================================\n");
-        System.out.println("1) Cadastrar novo Voo");
-        System.out.println("2) Consultar voos do bilhete");
-        System.out.println("3) incluir novo voo");
-        System.out.println("4) Remover Voo");
-        System.out.println("0) Voltar");
-        System.out.print("Digite a opção desejada:  ");
+    public static void menuVoo() {
+        do {
+            System.out.println("\nOPÇÕES REFERENTES AO VOO");
+            System.out.println("==============================================\n");
+            System.out.println("1) Cadastrar novo Voo");
+            System.out.println("2) Consultar voos do bilhete");
+            System.out.println("3) incluir novo voo");
+            System.out.println("4) Remover Voo");
+            System.out.println("0) Voltar");
+            System.out.print("Digite a opção desejada:  ");
 
-        /**
-         * Tratando erro excção NumberFormatException para caso de digitação de letras
-         * na entrada de numeros
-         */
-        try {
-            int opcao = Integer.parseInt(teclado.nextLine());
-            do {
-                switch (opcao) {
-                    case 0:
-                        menuPrincipal(teclado);
-                        break;
-                    case 1:
+            /**
+             * Tratando erro excção NumberFormatException para caso de digitação de letras
+             * na entrada de numeros
+             */
+            try {
+                int opcao = Integer.parseInt(teclado.nextLine());
+                do {
+                    switch (opcao) {
+                        case 0:
+                            menuPrincipal();
+                            break;
+                        case 1:
 
-                        break;
-                    case 2:
+                            break;
+                        case 2:
 
-                        break;
-                    case 3:
+                            break;
+                        case 3:
 
-                        break;
-                    case 4:
+                            break;
+                        case 4:
 
-                        break;
-                    default:
-                        System.out.println("Opção inválida. Tente novamente.");
-                        menuBilhete(teclado);
-                        break;
-                }
-            } while (opcao != 0);
-        } catch (NumberFormatException e) {
-            limparTela();
-            System.err.println("Formato de entrada não é válido. Tente novamente");
-            menuPrincipal(teclado);
-        }
+                            break;
+                        default:
+                            System.out.println("Opção inválida. Tente novamente.");
+                            menuBilhete();
+                            break;
+                    }
+                } while (opcao != 0);
+            } catch (NumberFormatException e) {
+                limparTela();
+                System.err.println("Formato de entrada não é válido. Tente novamente");
+                menuVoo();
+            }
+        } while (opcao != 0);
     }
 
     /**
@@ -269,6 +272,6 @@ public class App {
 
     public static void main(String[] args) {
         limparTela();
-        menuPrincipal(teclado);
+        menuPrincipal();
     }
 }

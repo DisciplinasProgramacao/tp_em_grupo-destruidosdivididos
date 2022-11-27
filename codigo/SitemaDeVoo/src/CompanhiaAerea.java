@@ -35,13 +35,13 @@ public class CompanhiaAerea {
    * @param mes
    * @return valor total de alguma coisa arrecadada no mês > pontos? bilhetes? financeiro?
    */
-  public double calcularTotalArrecadoBaseadoNoMes(int mes){
+  /*public double calcularTotalArrecadoBaseadoNoMes(int mes){
     double total = this.clientes.stream()
                               .mapToDouble(Cliente::calcularTotalDosBilhetesBaseadoNoMes)
                               .sum();
     return total;
   }
-
+*/
 
   /**
    * Adiciona novo cliente na lista de clientes da companhia
