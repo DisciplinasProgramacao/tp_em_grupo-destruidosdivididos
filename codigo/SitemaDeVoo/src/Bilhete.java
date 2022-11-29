@@ -23,6 +23,14 @@ public class Bilhete {
   }
 
   /**
+   * Pega o mes da data do bilhete
+   * @return mes da data do voo
+   */
+  public int getMonthDataVoo() {
+    return this.voos.get(0).data().get(Calendar.MONTH);
+  }
+
+  /**
    * Se na lista de voos houver apenas 1 voo, cobra o valor do voo mais 10%. Se não, cobra o valor do voo mais caro, mais 50% da soma dos outros voos.
    * @return O valor total do bilhete.
    */
@@ -44,6 +52,7 @@ public class Bilhete {
   public EstadoBilhete estado() {
     return this.estado;
   }
+
 
   private int vooMaisCaro(){
     int maisCaro = 0;
@@ -77,6 +86,15 @@ public class Bilhete {
   public int calcularPontos(){
     return (int)(this.calcularPontosGeradosSemDesconto() * this.tipoDoBilhete.percentualPontos());
   }
+
+  public double calcularTotalBaseadoNoMes(int mes){
+    double total = this.voos.stream()
+                              .filter(voo -> voo.data().get(Calendar.MONTH) == mes)
+                              .mapToDouble(Voo::valor)
+                              .sum();
+    return total;
+  }
+
 
   /**
    * Adiciona um novo voo ao ArrayList de voos.
