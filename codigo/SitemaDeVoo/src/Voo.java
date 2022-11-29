@@ -53,6 +53,6 @@ public class Voo {
 
   @Override
   public String toString(){
-    return "Data: " + Voo.formatoData.format(this.data.getTime()) + ", " + this.trecho.toString();
+    return "Data: " + Voo.formatoData.format(this.data.getTime()) + ", " + this.trecho.toString() + ", valor: " + this.valor;
   }
 }
