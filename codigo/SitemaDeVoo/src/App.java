@@ -21,21 +21,29 @@ public class App {
         System.out.print("\033[H\033[2J");
         System.out.flush();
     }
-    
+
     public static void carregarTrechos() throws FileNotFoundException {
         Scanner arquivo = new Scanner(new File(arquivoDeTrechos));
+
         while (arquivo.hasNextLine()) {
-            ArrayList<String> dados = new ArrayList<>(Arrays.asList(arquivo.nextLine().split(";"))); // criando um arraylist ja separando os dados do txt
+
+            ArrayList<String> dados = new ArrayList<>(Arrays.asList(arquivo.nextLine().split(";"))); // criando um
+                                                                                                     // arraylist ja
+                                                                                                     // separando os
+                                                                                                     // dados do txt
+
             ArrayList<Trecho> trechos = new ArrayList<>(50);
+
             String codigo = (dados.get(0));
             String origem = (dados.get(1));
             String destino = (dados.get(2));
+
             Trecho novo = new Trecho(codigo, origem, destino);
             trechos.add(novo);
         }
+
         arquivo.close();
     }
-
 
     /**
      * primeiro menu do programa
@@ -45,6 +53,8 @@ public class App {
      */
     public static void menuPrincipal() {
         do {
+            limparTela();
+
             System.out.println(" __________________________________________________");
             System.out.println("|                 Xulambs Airlines                 |");
             System.out.println("|          Voe conosco e viva uma aventura         |");
@@ -55,8 +65,9 @@ public class App {
             System.out.println("3) Opções do voo");
             System.out.println("0) Sair");
             System.out.print("Digite a opção desejada:  ");
+
             /**
-             * Tratando erro excção NumberFormatException para caso de digitação de letras
+             * Tratando erro execução NumberFormatException para caso de digitação de letras
              * na entrada de numeros
              */
             try {
@@ -68,6 +79,7 @@ public class App {
                         System.exit(0);
                         break;
                     case 1:
+                        limparTela();
                         menuCliente();
                         break;
                     case 2:
@@ -98,6 +110,8 @@ public class App {
      */
     public static void menuCliente() {
         do {
+            limparTela();
+
             System.out.println("\nOPÇÕES REFERENTES AO CLIENTE");
             System.out.println("==============================================\n");
             System.out.println("1) Cadastrar novo cliente");
@@ -114,21 +128,29 @@ public class App {
                 opcao = Integer.parseInt(teclado.nextLine());
                 switch (opcao) {
                     case 0:
+                        limparTela();
                         menuPrincipal();
                         break;
                     case 1:
+                        limparTela();
                         String nome = lerTeclado("Insira o nome do novo cliente:    ", teclado);
                         if (nome != null && nome != "" && nome != " ") {
                             user = new Cliente(nome);
                             clientes.add(user);
                             System.out.println(
-                                    "Confirmação de Cadastro:\n" + user.toString()
+                                    "\nConfirmação de Cadastro:\n" + user.toString()
                                             + "\nCadastrado com sucesso!\n");
+                            pausar(teclado);
                         } else {
                             System.out.println("Nome do cliente não pode estar vazio. Digite um nome válido.");
+                            pausar(teclado);
                         }
                         break;
+
+                    // ******************************************CRIAR MÉTODO VERIFICAÇÃO DO ARRAYLIST E SE O CLIENTE EXISTE********************************
+
                     case 2:
+                        limparTela();
                         if (!clientes.isEmpty()) {
                             String nomeCliente = lerTeclado(
                                     "Digite o nome do cliente que deseja consultar o total de bilhetes:     ",
@@ -137,35 +159,107 @@ public class App {
                             if (user != null) {
                                 System.out.println("Cliente: " + nomeCliente + " Total de Bilhetes: "
                                         + String.format("%.2f", user.calcularTotalDosBilhetes()) + "\n");
+                                pausar(teclado);
                             } else {
                                 System.out.println("Cliente não encontrado!");
+                                pausar(teclado);
                             }
                         } else {
                             System.out.println("\nNão há clientes cadastrados.");
+                            pausar(teclado);
+
                         }
                         break;
+
                     case 3:
+                        limparTela();
+                        if (!clientes.isEmpty()) {
+                            String nomeCliente = lerTeclado(
+                                    "Digite o nome do cliente que deseja consultar o total de pontos:     ",
+                                    teclado);
+                            user = user.verificaCliente(clientes, nomeCliente);
+                            if (user != null) {
+                                System.out.println("Cliente: " + nomeCliente + "\nTotal de pontos: "
+                                        + String.format("%.2f", user.calcularPontosValidos()) + "\n");
+                                pausar(teclado);
+                            } else {
+                                System.out.println("Cliente não encontrado!");
+                                pausar(teclado);
+                            }
+                        } else {
+                            System.out.println("\nNão há clientes cadastrados.");
+                            pausar(teclado);
+
+                        }
 
                         break;
+
                     case 4:
+                        limparTela();
+                        if (!clientes.isEmpty()) {
+                            String nomeCliente = lerTeclado(
+                                    "Digite o nome do cliente que deseja contratar um acelerador de pontos:     ",
+                                    teclado);
+                            user = user.verificaCliente(clientes, nomeCliente);
+                            if (user != null) {
+                                System.out.println("No momento o cadastro consta como: \n" + user.toString()
+                                        + "\n\nGostaria de alterar a assinatura para qual tipo? ");
+                                System.out.println("1) PRATA ");
+                                System.out.println("2) PRETO");
+                                int opcaoAss = Integer.parseInt(teclado.nextLine());
+                                ;
+                                switch (opcaoAss) {
+                                    case 1:
+                                        limparTela();
+                                        user.mudarAssinatura(Acelerador.PRATA);
+                                        System.out.println("Assinatura alterada para PRATA!");
+                                        pausar(teclado);
+                                        break;
+
+                                    case 2:
+                                        limparTela();
+                                        user.mudarAssinatura(Acelerador.PRETO);
+                                        System.out.println("Assinatura alterada para PRETO!");
+                                        pausar(teclado);
+
+                                    default:
+                                        limparTela();
+                                        System.out.println("Opção inválida. Tente novamente");
+                                        pausar(teclado);
+                                        break;
+                                }
+
+                            } else {
+                                System.out.println("Cliente não encontrado!");
+                                pausar(teclado);
+                            }
+                        } else {
+                            System.out.println("\nNão há clientes cadastrados.");
+                            pausar(teclado);
+
+                        }
 
                         break;
                     default:
+                        limparTela();
                         System.out.println("Opção inválida. Tente novamente.");
-                        // menuCliente(teclado);
+                        pausar(teclado);
+
                         break;
                 }
             } catch (NumberFormatException e) {
                 limparTela();
                 System.err.println("Formato de entrada não é válido. Tente novamente");
+                pausar(teclado);
                 menuCliente();
             }
         } while (opcao != 0);
+        pausar(teclado);
 
     }
 
     /**
-     * Apresenta opçõesreferentes a bilhete para usuário
+     * Apresenta opções referentes a bilhete para usuário
      * > cadastra novo bilhete
      * > consulta voos de um bilhete
      * > inclui novo voo ao bilhete
@@ -175,6 +269,8 @@ public class App {
      */
     public static void menuBilhete() {
         do {
+            limparTela();
+
             System.out.println("\nOPÇÕES REFERENTES AO BILHETE");
             System.out.println("==============================================\n");
             System.out.println("1) Cadastrar novo bilhete");
@@ -192,21 +288,31 @@ public class App {
                 do {
                     switch (opcao) {
                         case 0:
+                            limparTela();
                             menuPrincipal();
                             break;
                         case 1:
+                            limparTela();
 
+                            pausar(teclado);
                             break;
                         case 2:
+                            limparTela();
 
+                            pausar(teclado);
                             break;
                         case 3:
+                            limparTela();
 
+                            pausar(teclado);
                             break;
                         case 4:
+                            limparTela();
 
+                            pausar(teclado);
                             break;
                         default:
+                            limparTela();
                             System.out.println("Opção inválida. Tente novamente.");
                             menuBilhete();
                             break;
@@ -231,6 +337,8 @@ public class App {
      */
     public static void menuVoo() {
         do {
+            limparTela();
+
             System.out.println("\nOPÇÕES REFERENTES AO VOO");
             System.out.println("==============================================\n");
             System.out.println("1) Cadastrar novo Voo");
@@ -277,6 +385,19 @@ public class App {
         } while (opcao != 0);
     }
 
+    /*
+     * public static boolean verificaExistencia(){
+     * if (user != null) {
+     * System.out.println("Cliente: " + nomeCliente + " Total de Bilhetes: "
+     * + String.format("%.2f", user.calcularTotalDosBilhetes()) + "\n");
+     * pausar(teclado);
+     * } else {
+     * System.out.println("Cliente não encontrado!");
+     * pausar(teclado);
+     * }
+     * }
+     */
+
     /**
      * le do teclado
      * 
@@ -287,6 +408,16 @@ public class App {
     public static String lerTeclado(String mensagem, Scanner teclado) {
         System.out.print(mensagem + " ");
         return teclado.nextLine();
+    }
+
+    /**
+     * pausa ate o usuario pressionar enter
+     * 
+     * @param teclado ler do teclado
+     */
+    public static void pausar(Scanner teclado) {
+        System.out.print("\nTecle ENTER para continuar. ");
+        teclado.nextLine();
     }
 
     public static void main(String[] args) {
