@@ -8,6 +8,11 @@ public enum Cidade {
         this.nome = nome;
     }
 
+
+    public boolean igual(Cidade outra){
+        return this.nome.equals(outra.nome);
+    }
+
     @Override
     public String toString(){
         return this.nome;

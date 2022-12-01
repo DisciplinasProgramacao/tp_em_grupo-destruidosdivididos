@@ -29,12 +29,29 @@ public class CompanhiaAerea {
     this.clientes.add(novo);
   }
 
+  /**
+   * Compara os clientes pela quantidade de pontos
+   * @return O cliente com a maior quantidade de pontos
+   */
   public Cliente buscarClienteComMaisPontos(){
-    return null;
+    return this.clientes.stream()
+                        .max((c1, c2) -> c1.calcularPontosValidos() > c2.calcularPontosValidos()? 1 : -1)
+                        .get();
   }
 
+  /**
+   * Filtra os voos com mais de cem reservas saindo de uma cidade em um dia especifico
+   * @param cidade A cidade
+   * @param dia O dia
+   * @return Uma lista com esses voos
+   */
   public ArrayList<Voo> voosComMaisDeCemReservas(Cidade cidade, Calendar dia){
-    return null; 
+    ArrayList<Voo> res = new ArrayList<>(this.voos.stream()
+                                                  .filter(voo -> voo.origem().igual(cidade))
+                                                  .filter(voo -> voo.data().equals(dia))
+                                                  .filter(voo -> voo.reservas() > 100)
+                                                  .toList());
+    return res;
   }
 
   /**
@@ -53,10 +70,9 @@ public class CompanhiaAerea {
    * @return o total arrecadado no mês pela companhia aerea
    */
  public double calcularTotalArrecadadoBaseadoNoMes(int mes){
-    double total = 0;
-    for(Cliente cliente : clientes){
-      total += cliente.calcularTotalGastoBilhetesBaseadoNoMes(mes);
-    }
+    double total = this.clientes.stream()
+                                .mapToDouble(c -> c.calcularTotalGastoBilhetesBaseadoNoMes(mes))
+                                .sum();
     return total;
   }
 }

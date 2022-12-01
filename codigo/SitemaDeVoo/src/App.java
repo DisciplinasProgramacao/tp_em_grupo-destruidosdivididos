@@ -11,7 +11,6 @@ public class App {
     
   /**
    * verificar se um cliente existe cadastrado para trazer seus dados
-   * 
    * @param clientes lista de clientes existentes
    * @param nome     do buscado
    * @return o cliente solicitado
@@ -36,7 +35,6 @@ public class App {
 
     /**
      * primeiro menu do programa
-     * 
      * @param teclado ler do teclado
      * @return a opcao que o cliente digitou
      */
@@ -153,7 +151,7 @@ public class App {
     }
 
     /**
-     * Apresenta opçõesreferentes a bilhete para usuário
+     * Apresenta opções referentes a bilhete para usuário
      * > cadastra novo bilhete
      * > consulta voos de um bilhete
      * > inclui novo voo ao bilhete

@@ -8,6 +8,7 @@ public class Voo {
   private Trecho trecho;
   private Calendar data;
   private double valor;
+  private int reservas;
 
   /**
    * Cria um voo que tem: um trecho, uma data e um valor do voo.
@@ -19,6 +20,7 @@ public class Voo {
     this.trecho = novo;
     this.data = tratarData(novaData);
     this.valor = valor;
+    this.reservas = 0;
   }
 
   /**
@@ -27,6 +29,29 @@ public class Voo {
    */
   public double valor(){
     return this.valor;
+  }
+
+  /**
+   * 
+   * @return A cidade de origem do voo
+   */
+  public Cidade origem(){
+    return this.trecho.origem();
+  }
+
+  /**
+   * 
+   * @return A quantidade de reservas do voo
+   */
+  public int reservas(){
+    return this.reservas;
+  }
+
+  /**
+   * Soma a quantidade de reservas a reserva do voo
+   */
+  public void adicionarReserva(){
+    this.reservas++;
   }
 
 

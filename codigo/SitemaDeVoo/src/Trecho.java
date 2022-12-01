@@ -16,6 +16,10 @@ public class Trecho {
     this.destino = destino;
   }
 
+  public Cidade origem(){
+    return this.origem;
+  }
+
   @Override
     public String toString() {
         return "codigo do trecho: " + this.codigo + ", trajeto: " + this.origem + " / " + this.destino;

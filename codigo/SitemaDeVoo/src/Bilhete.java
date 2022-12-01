@@ -49,10 +49,13 @@ public class Bilhete {
     return total;
   }
 
+  /**
+   * 
+   * @return O estado do bilhete
+   */
   public EstadoBilhete estado() {
     return this.estado;
   }
-
 
   private int vooMaisCaro(){
     int maisCaro = 0;
