@@ -17,28 +17,6 @@ public class Cliente {
     this.bilhetes = new ArrayList<>();
   }
 
-  public boolean verificaArray(ArrayList<Cliente> clientes){
-    return clientes.isEmpty();
-  }
-
-  /**
-   * verificar se um cliente existe cadastrado para trazer seus dados
-   * 
-   * @param clientes lista de clientes existentes
-   * @param nome     do buscado
-   * @return o cliente solicitado
-   */
-  public Cliente verificaCliente(ArrayList<Cliente> clientes, String nome) {
-    if (!verificaArray(clientes)) {
-      for (Cliente cliente : clientes) {
-        if (nome.equals(cliente.nome)) {
-          return cliente;
-        }
-      }
-    } 
-    return null;
-  }
-
   /**
    * Adiciona novo bilhete na lista de bilhetes do cliente
    * 
@@ -76,14 +54,14 @@ public class Cliente {
   /**
    * Percorre a lista de bilhetes do cliente, somando o valor de cada bilhete
    */
-  public double calcularTotalDosBilhetes() {
+  public double calcularTotalGastoEmBilhetes() {
     double total = this.bilhetes.stream()
         .mapToDouble(Bilhete::calcularPreco)
         .sum();
     return total;
   }
 
-  public double calcularTotalDosBilhetesBaseadoNoMes(int mes) {
+  public double calcularTotalGastoBilhetesBaseadoNoMes(int mes) {
     double total = this.bilhetes.stream()
         .filter(bilhete -> bilhete.getMonthDataVoo() == mes)
         .mapToDouble(Bilhete::calcularPreco)
@@ -97,6 +75,12 @@ public class Cliente {
    */
   private void conferirBilhetes() {
     this.bilhetes.forEach(bilhete -> bilhete.atualizarEstado());
+  }
+
+  @Override
+  public boolean equals(Object outro){
+    Cliente outroCliente = (Cliente)(outro);
+    return this.nome.equals(outroCliente.nome);
   }
 
   @Override

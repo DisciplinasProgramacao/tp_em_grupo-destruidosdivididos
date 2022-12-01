@@ -87,15 +87,6 @@ public class Bilhete {
     return (int)(this.calcularPontosGeradosSemDesconto() * this.tipoDoBilhete.percentualPontos());
   }
 
-  public double calcularTotalBaseadoNoMes(int mes){
-    double total = this.voos.stream()
-                              .filter(voo -> voo.data().get(Calendar.MONTH) == mes)
-                              .mapToDouble(Voo::valor)
-                              .sum();
-    return total;
-  }
-
-
   /**
    * Adiciona um novo voo ao ArrayList de voos.
    * @param novo O voo que será adicionado.

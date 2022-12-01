@@ -8,6 +8,23 @@ public class App {
     public static ArrayList<Trecho> trechos = new ArrayList<>(100);
     public static ArrayList<Voo> voos = new ArrayList<>(100);
     public static ArrayList<Bilhete> bilhetes = new ArrayList<>(100);
+    
+  /**
+   * verificar se um cliente existe cadastrado para trazer seus dados
+   * 
+   * @param clientes lista de clientes existentes
+   * @param nome     do buscado
+   * @return o cliente solicitado
+   */
+  public static Cliente buscarCliente(String nome) {
+    Cliente novo = new Cliente(nome);
+      for (Cliente cliente : clientes) {
+        if (novo.equals(cliente)) 
+          return cliente;
+
+      }
+    return null;
+  }
 
     /**
      * limpa o console
@@ -106,10 +123,9 @@ public class App {
                             String nomeCliente = lerTeclado(
                                     "Digite o nome do cliente que deseja consultar o total de bilhetes:     ",
                                     teclado);
-                            user = user.verificaCliente(clientes, nomeCliente);
                             if (user != null) {
                                 System.out.println("Cliente: " + nomeCliente + "Pontos: "
-                                        + String.format("%.2f", user.calcularTotalDosBilhetes()) + "\n");
+                                        + String.format("%.2f", user.calcularTotalGastoEmBilhetes()) + "\n");
                             } else {
                                 System.out.println("Cliente não encontrado!");
                             }
