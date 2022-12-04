@@ -5,14 +5,19 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 public class App {
-    static int opcao = 0;
-    static Cliente user;
     static Scanner teclado = new Scanner(System.in);
+    public static final String arquivoDeTrechos = "trechos.txt";
+    public static final String arquivoDeVoos = "voos.txt";
+    public static final String arquivoDeClientes = "clientes.txt";
+    public static final String arquivoDeBilhetes = "bilhetes.txt";
     public static ArrayList<Cliente> clientes = new ArrayList<>(100);
     public static ArrayList<Trecho> trechos = new ArrayList<>(100);
     public static ArrayList<Voo> voos = new ArrayList<>(100);
     public static ArrayList<Bilhete> bilhetes = new ArrayList<>(100);
-    public static final String arquivoDeTrechos = "trechos.txt";
+    static int opcao = 0;
+    static Cliente user;
+    
+    
 
     /**
      * limpa o console
@@ -424,4 +429,5 @@ public class App {
         limparTela();
         menuPrincipal();
     }
+    ;
 }
