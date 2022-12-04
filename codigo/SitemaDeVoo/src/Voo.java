@@ -8,14 +8,15 @@ public class Voo {
   private Trecho trecho;
   private Calendar data;
   private double valor;
-
+  private String id;
   /**
    * Cria um voo que tem: um trecho, uma data e um valor do voo.
    * @param novo O trecho do voo.
    * @param data A data do voo.
    * @param valor O valor do voo.
    */
-  public Voo(Trecho novo, String novaData, double valor){
+  public Voo(String id, Trecho novo, String novaData, double valor){
+    this.id = id;
     this.trecho = novo;
     this.data = tratarData(novaData);
     this.valor = valor;

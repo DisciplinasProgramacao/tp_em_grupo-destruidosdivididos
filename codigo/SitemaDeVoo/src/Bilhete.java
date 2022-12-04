@@ -4,7 +4,6 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 public class Bilhete {
-
   private TipoBilhete tipoDoBilhete;
   private static final double acrescimoDeVooDireto = 0.1;
   private static final double percentualCobradoPorConexao = 0.5;

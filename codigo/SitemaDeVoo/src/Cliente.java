@@ -17,10 +17,6 @@ public class Cliente {
     this.bilhetes = new ArrayList<>();
   }
 
-  public boolean verificaArray(ArrayList<Cliente> clientes){
-    return clientes.isEmpty();
-  }
-
   /**
    * verificar se um cliente existe cadastrado para trazer seus dados
    * 
@@ -29,13 +25,11 @@ public class Cliente {
    * @return o cliente solicitado
    */
   public Cliente verificaCliente(ArrayList<Cliente> clientes, String nome) {
-    if (!verificaArray(clientes)) {
       for (Cliente cliente : clientes) {
         if (nome.equals(cliente.nome)) {
           return cliente;
         }
       }
-    } 
     return null;
   }
 
