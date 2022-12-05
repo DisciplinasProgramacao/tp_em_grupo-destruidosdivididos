@@ -32,6 +32,14 @@ public class Voo {
   }
 
   /**
+   * Cria o codigo do voo.
+   * @return codigo do voo.
+   */
+  public String criarCodigoVoo(){
+    return this.trecho.getCodigo() + "-" + this.data();
+  }
+
+  /**
    * 
    * @return A cidade de origem do voo
    */

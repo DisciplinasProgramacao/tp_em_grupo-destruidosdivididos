@@ -20,6 +20,10 @@ public class Trecho {
     return this.origem;
   }
 
+  public String getCodigo(){
+    return this.codigo;
+  }
+
   @Override
     public String toString() {
         return "codigo do trecho: " + this.codigo + ", trajeto: " + this.origem + " / " + this.destino;
