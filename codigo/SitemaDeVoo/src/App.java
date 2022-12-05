@@ -25,17 +25,20 @@ public class App {
      */
     static int opcao = 0;
     static Cliente user;
+    static Funcionario func;
     static Scanner teclado = new Scanner(System.in);
     static String nomeCliente = "";
     static int cpf;
+    static int senha;
     public static ArrayList<Cliente> clientes = new ArrayList<>(100);
     public static ArrayList<Trecho> trechos = new ArrayList<>(100);
     public static ArrayList<Voo> voos = new ArrayList<>(100);
     public static ArrayList<Bilhete> bilhetes = new ArrayList<>(100);
+    public static ArrayList<Funcionario> funcionarios = new ArrayList<>(100);
     public static final String arquivoDeTrechos = "trechosEVoos.txt";
 
     /**
-     * ===============================================
+     * ==============================func=================
      * COMPLEMENTOS
      * ===============================================
      * 
@@ -91,7 +94,10 @@ public class App {
             String data = (dados.get(4));
             double preco = Double.parseDouble((dados.get(5)));
             Voo novoVoo = new Voo(id, novo, data, preco);
+            // Bilhete novoBilhete = new Bilhete();
+
             voos.add(novoVoo);
+
         }
 
         arquivo.close();
@@ -127,8 +133,23 @@ public class App {
      *                 iformações de nome e cpf
      * @return > int 1 ou -1
      */
-    public static int verificaSeExiste(ArrayList<Cliente> clientes, String usuario, int cpf, Cliente user) {
+    public static int verificaSeExisteCliente(ArrayList<Cliente> clientes, String usuario, int cpf, Cliente user) {
         return user.validarCadastroCliente(clientes, nomeCliente.toUpperCase(), cpf) == null ? 1 : -1;
+    }
+
+    /**
+     * @param clientes > arraylist de funcionarios
+     * @param usuario  > funcionario buscado
+     * @param cpf2     > cpf do funcionario buscado
+     * @param buscado  > objeto funcionario que chama o
+     *                 método @validarCadastroCliente
+     *                 na classe do cliente que utiliza equals para comparar
+     *                 iformações de nome e cpf
+     * @return > int 1 ou -1
+     */
+    public static int verificaSeExisteFuncionario(ArrayList<Funcionario> funcs, String usuario, int senha,
+            Funcionario user) {
+        return user.validarCadastroFuncionario(funcs, nomeCliente.toUpperCase(), senha) == null ? 1 : -1;
     }
 
     /**
@@ -151,7 +172,7 @@ public class App {
      */
     public static String InfosCliente(String nomeCliente) {
         if (!verificaLista(clientes)) {
-            switch (verificaSeExiste(clientes, nomeCliente, cpf, user)) {
+            switch (verificaSeExisteCliente(clientes, nomeCliente, cpf, user)) {
                 case 1:
                     return user.toString();
                 case 2:
@@ -162,6 +183,13 @@ public class App {
         }
         return "";
     }
+
+    /**
+     * ===============================================
+     * MÉTODOS DE LOGIN DO CLIENTE
+     * ===============================================
+     * 
+     */
 
     /**
      * coleta nome e cpf do cliente e chama os metodos de verificação para entrar na
@@ -176,7 +204,7 @@ public class App {
             case 0:
                 return ("\nOs campos nome e cpf não podem ficar em branco. Tente novamente.");
             case 1:
-                opcao = verificaSeExiste(clientes, nome, cpf, user);
+                opcao = verificaSeExisteCliente(clientes, nome, cpf, user);
                 switch (opcao) {
                     case 1:
                         System.out.print(
@@ -212,7 +240,7 @@ public class App {
      * 
      * @return uma string
      */
-    public static String fazerLogin() {
+    public static String fazerLoginCliente() {
         nomeCliente = lerTeclado("Digite seu NOME:     ", teclado);
         System.out.print("Digite seu CPF:      ");
         cpf = Integer.parseInt(teclado.nextLine());
@@ -229,6 +257,84 @@ public class App {
                     return (cadastroDeCliente(nomeCliente, cpf));
                 }
         }
+        return "";
+    }
+
+    /**
+     * ===============================================
+     * MÉTODOS DE LOGIN DO FUNCIONÁRIO
+     * ===============================================
+     * 
+     */
+
+    /**
+     * Usado para validar um usuario e então decidir se cria um novo usuario ou
+     * notifica que o usuario stá errado com base no cpf
+     * 
+     * @return uma string
+     */
+    public static String fazerLoginFuncionario() {
+        nomeCliente = lerTeclado("Digite seu NOME:     ", teclado);
+        System.out.print("Digite sua SENHA:     ");
+        senha = Integer.parseInt(teclado.nextLine());
+        func = new Funcionario(senha, nomeCliente.toUpperCase());
+        opcao = verificaEntradaDados(nomeCliente, senha);
+        switch (opcao) {
+            case 0:
+                return ("\nOs campos nome e senha não podem ficar em branco. Tente novamente.");
+            case 1:
+                func = func.validarLoginFuncionario(funcionarios, nomeCliente, senha);
+                if (func != null) {
+                    funcionarioLogado(func);
+                } else {
+                    return (cadastroDeFuncionario(nomeCliente, senha));
+                }
+        }
+        return "";
+    }
+
+    /**
+     * coleta nome e senha do cliente e chama os metodos de verificação para entrar
+     * na
+     * area do cliente ou então criar um novo cliente a partir dos dados recebidos.
+     * O usuário pode cancelar a operação de criação de cliente novo se não quiser
+     * criá-lo.
+     */
+    public static String cadastroDeFuncionario(String nome, int senha) {
+        func = new Funcionario(senha, nome.toUpperCase());
+        opcao = verificaEntradaDados(nome, cpf);
+        switch (opcao) {
+            case 0:
+                return ("\nOs campos nome e senha não podem ficar em branco. Tente novamente.");
+            case 1:
+                opcao = verificaSeExisteFuncionario(funcionarios, nome, senha, func);
+                switch (opcao) {
+                    case 1:
+                        System.out.print(
+                                "\nCliente não encontrado. Deseja cadastrar um novo cliente com estes dados? \n\n1.Sim / 2.Não:    ");
+                        opcao = Integer.parseInt(teclado.nextLine());
+                        switch (opcao) {
+                            case 1:
+                                func = func.validarCadastroFuncionario(funcionarios, nome, senha);
+                                if (func == null) {
+                                    func = new Funcionario(senha, nome.toUpperCase());
+                                    funcionarios.add(func);
+
+                                    return ("\nConfirmação de Cadastro:\n" + func.toString()
+                                            + "\n\nCadastrado com sucesso!");
+
+                                } else {
+                                    return ("\nCliente com o mesmo senha ja cadastrado!");
+                                }
+                            case 2:
+                                return ("\nOperação cancelada pelo Usuário.");
+                        }
+                    case -1:
+                        System.out.println("\nCliente com o mesmo senha ja cadastrado! Verifique o nome de usuário.");
+                }
+                break;
+        }
+
         return "";
     }
 
@@ -273,13 +379,14 @@ public class App {
                         break;
                     case 1:
                         limparTela();
-                        System.out.println(fazerLogin());
+                        System.out.println(fazerLoginCliente());
                         pausar(teclado);
                         menuPrincipal();
                         break;
                     case 2:
                         limparTela();
-                        // funcionarioLogado();
+                        System.out.println(fazerLoginFuncionario());
+                        pausar(teclado);
                         break;
                     default:
                         limparTela();
@@ -444,11 +551,11 @@ public class App {
                         break;
                     case 1:
                         limparTela();
-                        menuCliente();
+                        menuCliente(emUso);
                         break;
                     case 2:
                         limparTela();
-                        menuBilhete();
+                        menuBilhete(emUso);
                         break;
                     default:
                         limparTela();
@@ -475,7 +582,7 @@ public class App {
      * 
      * @param teclado lê opcão desejada pelo usuário
      */
-    public static void menuCliente() {
+    public static void menuCliente(Funcionario emUso) {
         do {
             limparTela();
             System.out.println("\nOPÇÕES REFERENTES AO CLIENTE");
@@ -495,7 +602,8 @@ public class App {
                 switch (opcao) {
                     case 0:
                         limparTela();
-                        menuPrincipal();
+                        funcionarioLogado(func);
+                        ;
                         break;
                     case 1:
                         limparTela();
@@ -550,7 +658,7 @@ public class App {
                                         pausar(teclado);
 
                                     case 0:
-                                        menuCliente();
+                                        menuCliente(emUso);
 
                                     default:
                                         limparTela();
@@ -582,7 +690,7 @@ public class App {
                 limparTela();
                 System.err.println("Formato de entrada não é válido. Tente novamente");
                 pausar(teclado);
-                menuCliente();
+                menuCliente(emUso);
             }
         } while (opcao != 0);
 
@@ -597,7 +705,7 @@ public class App {
      * 
      * @param teclado lê opcão desejada pelo usuário
      */
-    public static void menuBilhete() {
+    public static void menuBilhete(Funcionario emUso) {
         do {
             limparTela();
 
@@ -647,7 +755,7 @@ public class App {
                         default:
                             limparTela();
                             System.out.println("Opção inválida. Tente novamente.");
-                            menuBilhete();
+                            menuBilhete(emUso);
                             break;
                     }
                 } while (opcao != 0);
@@ -655,7 +763,7 @@ public class App {
                 limparTela();
                 System.err.println("Formato de entrada não é válido. Tente novamente");
                 pausar(teclado);
-                menuBilhete();
+                menuBilhete(emUso);
             }
         } while (opcao != 0);
     }

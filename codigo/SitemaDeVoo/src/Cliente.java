@@ -25,7 +25,7 @@ public class Cliente {
 
   /**
    * verificar se um cliente existe cadastrado para trazer seus dados. IMPORTANTE:
-   * Por mais que os nomes se repitamo foco é impedir a repetição do CPF.
+   * Por mais que os nomes se repitam o foco é impedir a repetição do CPF.
    * 
    * @param clientes lista de clientes existentes
    * @param nome     do buscado
