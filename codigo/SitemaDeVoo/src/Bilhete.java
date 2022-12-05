@@ -48,10 +48,13 @@ public class Bilhete {
     return total;
   }
 
+  /**
+   * 
+   * @return O estado do bilhete
+   */
   public EstadoBilhete estado() {
     return this.estado;
   }
-
 
   private int vooMaisCaro(){
     int maisCaro = 0;
@@ -85,15 +88,6 @@ public class Bilhete {
   public int calcularPontos(){
     return (int)(this.calcularPontosGeradosSemDesconto() * this.tipoDoBilhete.percentualPontos());
   }
-
-  public double calcularTotalBaseadoNoMes(int mes){
-    double total = this.voos.stream()
-                              .filter(voo -> voo.data().get(Calendar.MONTH) == mes)
-                              .mapToDouble(Voo::valor)
-                              .sum();
-    return total;
-  }
-
 
   /**
    * Adiciona um novo voo ao ArrayList de voos.

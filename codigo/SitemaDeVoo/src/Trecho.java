@@ -1,8 +1,8 @@
 public class Trecho {
 
   private String codigo;
-  private String origem;
-  private String destino;
+  private Cidade origem;
+  private Cidade destino;
 
   /**
    * Cria um trecho que tem: um codigo único, uma origem e um destino.
@@ -10,10 +10,11 @@ public class Trecho {
    * @param origem O Aeroporto de origem.
    * @param destino O Aeroporto de destino.
    */
-  public Trecho (String codigo, String origem, String destino){
+  public Trecho (String codigo, Cidade origem, Cidade destino){
     this.codigo = codigo;
     this.origem = origem;
     this.destino = destino;
+
 }
 /**
  * @return o codigo do trecho
@@ -21,9 +22,18 @@ public class Trecho {
 public String getCodigo(){
   return this.codigo;
 }
+  }
+
+  public Cidade origem(){
+    return this.origem;
+  }
+
+  public String getCodigo(){
+    return this.codigo;
+  }
 
   @Override
     public String toString() {
-        return "codigo do trecho: " + this.codigo + ", trajeto: " + this.origem + "/" + this.destino;
+        return "codigo do trecho: " + this.codigo + ", trajeto: " + this.origem + " / " + this.destino;
     }
 }

@@ -25,8 +25,6 @@ public class BilheteTest {
     public void testarCalcularPrecoVooDireto(){
         Bilhete novoBilhete = new Bilhete(TipoBilhete.COMUM);
         Voo novoVoo = new Voo("BBW1206", new Trecho("A307333", "Barcelona", "Paris"), "11/12/2022", 1000);
-        novoBilhete.adicionarVoo(novoVoo);
-        assertEquals(1100, novoBilhete.calcularPreco());
     }
 
     @Test

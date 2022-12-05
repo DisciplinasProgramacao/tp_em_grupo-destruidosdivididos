@@ -9,6 +9,8 @@ public class Voo {
   private Calendar data;
   private double valor;
   private String id;
+  private int reservas;
+
   /**
    * Cria um voo que tem: um trecho, uma data e um valor do voo.
    * @param novo O trecho do voo.
@@ -20,6 +22,7 @@ public class Voo {
     this.trecho = novo;
     this.data = tratarData(novaData);
     this.valor = valor;
+    this.reservas = 0;
   }
 
   /**
@@ -29,6 +32,7 @@ public class Voo {
   public double valor(){
     return this.valor;
   }
+
 /**
  * cria um codigo a partir da data e do codigo de um trecho onde o voo vai passar
  * @return
@@ -36,6 +40,39 @@ public class Voo {
   public String criarCodigoVoo(){
     return this.trecho.getCodigo() + "-" + this.data();
   }
+
+
+  /**
+   * Cria o codigo do voo.
+   * @return codigo do voo.
+   */
+  public String criarCodigoVoo(){
+    return this.trecho.getCodigo() + "-" + this.data();
+  }
+
+  /**
+   * 
+   * @return A cidade de origem do voo
+   */
+  public Cidade origem(){
+    return this.trecho.origem();
+  }
+
+  /**
+   * 
+   * @return A quantidade de reservas do voo
+   */
+  public int reservas(){
+    return this.reservas;
+  }
+
+  /**
+   * Soma a quantidade de reservas a reserva do voo
+   */
+  public void adicionarReserva(){
+    this.reservas++;
+  }
+
 
   /**
    * Recebe a data como String, e trata para Calendar
@@ -61,6 +98,6 @@ public class Voo {
 
   @Override
   public String toString(){
-    return "Data: " + Voo.formatoData.format(this.data.getTime()) + ", " + this.trecho.toString();
+    return "Data: " + Voo.formatoData.format(this.data.getTime()) + ", " + this.trecho.toString() + ", valor: " + this.valor;
   }
 }
