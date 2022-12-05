@@ -3,7 +3,7 @@ import java.util.ArrayList;
 public class Cliente {
 
   private String nome;
-  private ArrayList<Bilhete> bilhetes = new ArrayList<>(100);
+  private ArrayList<Bilhete> bilhetes;
   private Acelerador assinatura;
   private int cpf;
 
@@ -67,7 +67,13 @@ public class Cliente {
    * @param novo
    */
   public void adicionarBilhete(Bilhete novo) {
-    this.bilhetes.add(novo);
+    int i = 0;
+    for(;i < this.bilhetes.size(); i++){
+      if(novo.data().after(this.bilhetes.get(i).data())){
+        break;
+      }
+    }
+    this.bilhetes.add(i, novo);
   }
 
   /**

@@ -29,6 +29,10 @@ public class Bilhete {
     return this.voos.get(0).data().get(Calendar.MONTH);
   }
 
+  public Calendar data(){
+    return this.voos.get(0).data();
+  }
+
   /**
    * Se na lista de voos houver apenas 1 voo, cobra o valor do voo mais 10%. Se não, cobra o valor do voo mais caro, mais 50% da soma dos outros voos.
    * @return O valor total do bilhete.
