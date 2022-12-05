@@ -58,6 +58,7 @@ public class CompanhiaAerea {
    * calcula o total gasto em bilhetes pelos clientes da companhia
    */
   public double calcularTotalArrecado(){
+
     double total = this.clientes.stream()
                               .mapToDouble(Cliente::calcularTotalGastoEmBilhetes)
                               .sum();

@@ -14,6 +14,14 @@ public class Trecho {
     this.codigo = codigo;
     this.origem = origem;
     this.destino = destino;
+
+}
+/**
+ * @return o codigo do trecho
+ */
+public String getCodigo(){
+  return this.codigo;
+}
   }
 
   public Cidade origem(){

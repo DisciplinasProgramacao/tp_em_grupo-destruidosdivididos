@@ -8,6 +8,7 @@ public class Voo {
   private Trecho trecho;
   private Calendar data;
   private double valor;
+  private String id;
   private int reservas;
 
   /**
@@ -16,7 +17,8 @@ public class Voo {
    * @param data A data do voo.
    * @param valor O valor do voo.
    */
-  public Voo(Trecho novo, String novaData, double valor){
+  public Voo(String id, Trecho novo, String novaData, double valor){
+    this.id = id;
     this.trecho = novo;
     this.data = tratarData(novaData);
     this.valor = valor;
@@ -30,6 +32,15 @@ public class Voo {
   public double valor(){
     return this.valor;
   }
+
+/**
+ * cria um codigo a partir da data e do codigo de um trecho onde o voo vai passar
+ * @return
+ */
+  public String criarCodigoVoo(){
+    return this.trecho.getCodigo() + "-" + this.data();
+  }
+
 
   /**
    * Cria o codigo do voo.
