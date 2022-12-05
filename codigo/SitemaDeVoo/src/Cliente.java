@@ -5,46 +5,60 @@ public class Cliente {
   private String nome;
   private ArrayList<Bilhete> bilhetes = new ArrayList<>(100);
   private Acelerador assinatura;
-  private String cpf;
+  private int cpf;
 
   /**
    * Cria um cliente com um nome e um total de pontos que inicia em 0.
    * 
    * @param nome O nome do Cliente.
    */
-  public Cliente(String cpf, String nome) {
+  public Cliente(int cpf, String nome) {
     this.cpf = cpf;
     this.nome = nome;
     this.assinatura = Acelerador.INVALIDO;
     this.bilhetes = new ArrayList<>();
   }
 
-  public String nomeCliente(){
+  public String nomeCliente() {
     return nome;
   }
+
   /**
-   * verificar se um cliente existe cadastrado para trazer seus dados
+   * verificar se um cliente existe cadastrado para trazer seus dados. IMPORTANTE:
+   * Por mais que os nomes se repitamo foco é impedir a repetição do CPF.
    * 
    * @param clientes lista de clientes existentes
    * @param nome     do buscado
-   * @return o cliente solicitado
+   * @return o cliente solicitado ou null
    */
-  public Cliente validarCadastroCliente(ArrayList<Cliente> clientes, String nome, String cpf) {
+  public Cliente validarCadastroCliente(ArrayList<Cliente> clientes, String nome, int cpf) {
+    if (!clientes.isEmpty()) {
       for (Cliente cliente : clientes) {
-        if ((nome.equals(cliente.nome) && cpf.equals(cliente.cpf)) || cpf.equals(cliente.cpf)) {
+        if (cliente.cpf == this.cpf) {
           return cliente;
         }
       }
+    }
     return null;
   }
 
-  public Cliente verificarInformacoesCliente(ArrayList<Cliente> clientes, String nome, String cpf){
-    for (Cliente cliente : clientes) {
-      if (nome.equals(cliente.nome) && cpf.equals(cliente.cpf)) {
-        return cliente;
+  /**
+   * Valida um usuario que está tentando logar no painel de cliente
+   * 
+   * @param clientes arraylist de clientes
+   * @param nome     nome inserido pelo usuario
+   * @param cpf      dado inserido pelo usuario
+   * @return cliente caso exista, ou null caso não exista ou a fila estaja vazia.
+   */
+  public Cliente validarLoginCliente(ArrayList<Cliente> clientes, String nome, int cpf) {
+    if (!clientes.isEmpty()) {
+      for (Cliente cliente : clientes) {
+        if (cliente.nome.equals(this.nome) && cliente.cpf == this.cpf) {
+          return cliente;
+        }
       }
     }
-  return null;
+    return null;
   }
 
   /**
