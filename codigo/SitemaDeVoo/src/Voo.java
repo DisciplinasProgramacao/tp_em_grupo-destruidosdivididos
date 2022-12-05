@@ -29,7 +29,13 @@ public class Voo {
   public double valor(){
     return this.valor;
   }
-
+/**
+ * cria um codigo a partir da data e do codigo de um trecho onde o voo vai passar
+ * @return
+ */
+  public String criarCodigoVoo(){
+    return this.trecho.getCodigo() + "-" + this.data();
+  }
 
   /**
    * Recebe a data como String, e trata para Calendar

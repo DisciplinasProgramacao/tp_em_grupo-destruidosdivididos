@@ -15,6 +15,12 @@ public class Trecho {
     this.origem = origem;
     this.destino = destino;
 }
+/**
+ * @return o codigo do trecho
+ */
+public String getCodigo(){
+  return this.codigo;
+}
 
   @Override
     public String toString() {

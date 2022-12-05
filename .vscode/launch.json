@@ -9,6 +9,13 @@
             "name": "Launch App",
             "request": "launch",
             "mainClass": "App",
+            "projectName": "tp_em_grupo-destruidosdivididos_1f6f086e"
+        },
+        {
+            "type": "java",
+            "name": "Launch App",
+            "request": "launch",
+            "mainClass": "App",
             "projectName": "tp_em_grupo-destruidosdivididos_d032e39a"
         },
         {
