@@ -19,6 +19,9 @@ public class Cliente {
     this.bilhetes = new ArrayList<>();
   }
 
+  public String nomeCliente(){
+    return nome;
+  }
   /**
    * verificar se um cliente existe cadastrado para trazer seus dados
    * 
