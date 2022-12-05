@@ -26,13 +26,22 @@ public class Cliente {
    * @param nome     do buscado
    * @return o cliente solicitado
    */
-  public Cliente verificaCliente(ArrayList<Cliente> clientes, String nome, String cpf) {
+  public Cliente validarCadastroCliente(ArrayList<Cliente> clientes, String nome, String cpf) {
       for (Cliente cliente : clientes) {
-        if (nome.equals(cliente.nome) && cpf.equals(cliente.cpf)) {
+        if ((nome.equals(cliente.nome) && cpf.equals(cliente.cpf)) || cpf.equals(cliente.cpf)) {
           return cliente;
         }
       }
     return null;
+  }
+
+  public Cliente verificarInformacoesCliente(ArrayList<Cliente> clientes, String nome, String cpf){
+    for (Cliente cliente : clientes) {
+      if (nome.equals(cliente.nome) && cpf.equals(cliente.cpf)) {
+        return cliente;
+      }
+    }
+  return null;
   }
 
   /**

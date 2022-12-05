@@ -75,26 +75,27 @@ public class App {
      */
 
     /**
-     * Verifica se a lista de cliente possui algum cliente cadastrado
+     * Verifica se a lista de clientes não está vazia e se possui algum cliente
+     * cadastrado com os dados passados
      * 
      * @param nomeCliente nome do cliente buscado
      * @return texto que avisa se encontrou ou não
      */
-    public static void procurarCliente(String nomeCliente) {
+    public static String procurarCliente(String nomeCliente) {
         if (!clientes.isEmpty()) {
-            nomeCliente = lerTeclado(
+           nomeCliente = lerTeclado(
 
-                    "Digite o CPF do cliente que deseja consultar:     ", teclado);
-                    cpf = lerTeclado(
+                    "Digite o NOME do cliente que deseja consultar:     ", teclado);
+            cpf = lerTeclado(
 
-                    "Digite o nome do cliente que deseja consultar:     ", teclado);
-            if (user.verificaCliente(clientes, nomeCliente, cpf) != null) {
-                System.out.println(user.toString());
+                    "Digite o CPF do cliente que deseja consultar:      ", teclado);
+            if (user.verificarInformacoesCliente(clientes, nomeCliente.toUpperCase(), cpf) != null) {
+                return user.toString();
             } else {
-                System.out.println("Cliente não encontrado!");
+               return "\nCliente não encontrado!";
             }
         } else {
-            System.out.println("\nNão há clientes cadastrados.");
+           return "\nNão há clientes cadastrados.";
         }
     }
 
@@ -104,9 +105,6 @@ public class App {
      * @param necessario arraylist passado como parametro
      * @return seu tamanho +1 para ser o id do objeto dentro do arraylist
      */
-   
-   
-    
 
     /**
      * primeiro menu do programa
@@ -196,42 +194,47 @@ public class App {
                         break;
                     case 1:
                         limparTela();
-                        nomeCliente = lerTeclado("Insira o nome do novo cliente:    ", teclado);
+                        nomeCliente = lerTeclado("Insira o NOME do novo cliente:    ", teclado);
                         cpf = lerTeclado("Insira o CPF do novo cliente:    ", teclado);
-                        if (nomeCliente != null && nomeCliente != "" && nomeCliente != " ") {
-                            user = new Cliente(cpf, nomeCliente);
-                            clientes.add(user);
-                            System.out.println(
-                                    "\nConfirmação de Cadastro:\n" + user.toString() + "\n\nCadastrado com sucesso!");
-                            pausar(teclado);
+                        if (nomeCliente != null && nomeCliente != "" && nomeCliente != " " && cpf != "" && cpf != " "
+                                && cpf != null) {
+                            user = new Cliente(cpf, nomeCliente.toUpperCase());
+                            if (user.validarCadastroCliente(clientes, nomeCliente.toUpperCase(), cpf) == null) {
+                                clientes.add(user);
+                                System.out.println(
+                                        "\nConfirmação de Cadastro:\n" + user.toString()
+                                                + "\n\nCadastrado com sucesso!");
+                                pausar(teclado);
+                            } else {
+                                System.out.println("Cliente com o mesmo CPF ja cadastrado!");
+                                pausar(teclado);
+                            }
                         } else {
-                            System.out.println("Nome do cliente não pode estar vazio. Digite um nome válido.");
+                            System.out.println("Nome do cliente e CPF não podem estar vazios. Digite um nome válido.");
                             pausar(teclado);
                         }
                         break;
 
                     case 2:
                         limparTela();
-                        procurarCliente(nomeCliente);
-                        System.out.println(
-                                "Total de Bilhetes: " + String.format("%.2f", user.calcularTotalDosBilhetes()));
+                        System.out.println(procurarCliente(nomeCliente) +
+                                "\nTotal de Bilhetes: " + String.format("%.2f", user.calcularTotalDosBilhetes()));
                         pausar(teclado);
                         break;
 
                     case 3:
                         limparTela();
-                        procurarCliente(nomeCliente);
-                        System.out.println("Total de pontos: " + user.calcularPontosValidos());
+                        
+                        System.out.println(procurarCliente(nomeCliente) + "\nTotal de pontos: " + user.calcularPontosValidos());
                         pausar(teclado);
                         break;
 
                     case 4:
                         limparTela();
                         try {
-                            nomeCliente = lerTeclado("Digite o nome do cliente que deseja consultar:     ", teclado);
-                            cpf = lerTeclado("Digite o CPF do cliente que deseja consultar:     ", teclado);
-                            user = user.verificaCliente(clientes, nomeCliente, cpf);
-                            if (user != null) {
+                            nomeCliente = lerTeclado("Digite o NOME do cliente que deseja consultar:     ", teclado);
+                            cpf = lerTeclado("Digite o CPF do cliente que deseja consultar:      ", teclado);
+                            if (user.verificarInformacoesCliente(clientes, nomeCliente, cpf) != null) {
                                 System.out.println("\n\nNo momento o cadastro consta como: \n" + user.toString()
                                         + "\n\nGostaria de alterar a assinatura para qual tipo? ");
                                 System.out.println("1) Prata ");
@@ -262,13 +265,13 @@ public class App {
                                         System.out.println("Opção inválida. Tente novamente");
                                         pausar(teclado);
                                         break;
-
                                 }
-
+                            } else if (user.verificarInformacoesCliente(clientes, nomeCliente, cpf) == null) {
+                                System.err.println(user.verificarInformacoesCliente(clientes, nomeCliente, cpf));
                             } else {
                                 System.out.println("Cliente não encontrado!");
-                                pausar(teclado);
                             }
+                            pausar(teclado);
 
                         } catch (NumberFormatException e) {
                             limparTela();
@@ -290,6 +293,7 @@ public class App {
                 menuCliente();
             }
         } while (opcao != 0);
+
     }
 
     /**
@@ -329,7 +333,7 @@ public class App {
                             limparTela();
                             Bilhete novo = new Bilhete(TipoBilhete.COMUM);
                             // System.out.println(verificarListaClientes(nomeCliente));
-                            //user = user.verificaCliente(clientes, nomeCliente);
+                            // user = user.verificaCliente(clientes, nomeCliente);
                             user.adicionarBilhete(novo);
                             novo.adicionarVoo(voos.get(opcao));
                             pausar(teclado);
@@ -337,7 +341,7 @@ public class App {
                         case 2:
                             limparTela();
                             // System.out.println(verificarListaClientes(nomeCliente));
-                           // user = user.verificaCliente(clientes, nomeCliente);
+                            // user = user.verificaCliente(clientes, nomeCliente);
                             pausar(teclado);
                             break;
                         case 3:
