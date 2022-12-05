@@ -5,13 +5,15 @@ public class Cliente {
   private String nome;
   private ArrayList<Bilhete> bilhetes = new ArrayList<>(100);
   private Acelerador assinatura;
+  private String cpf;
 
   /**
    * Cria um cliente com um nome e um total de pontos que inicia em 0.
    * 
    * @param nome O nome do Cliente.
    */
-  public Cliente(String nome) {
+  public Cliente(String cpf, String nome) {
+    this.cpf = cpf;
     this.nome = nome;
     this.assinatura = Acelerador.INVALIDO;
     this.bilhetes = new ArrayList<>();
@@ -24,9 +26,9 @@ public class Cliente {
    * @param nome     do buscado
    * @return o cliente solicitado
    */
-  public Cliente verificaCliente(ArrayList<Cliente> clientes, String nome) {
+  public Cliente verificaCliente(ArrayList<Cliente> clientes, String nome, String cpf) {
       for (Cliente cliente : clientes) {
-        if (nome.equals(cliente.nome)) {
+        if (nome.equals(cliente.nome) && cpf.equals(cliente.cpf)) {
           return cliente;
         }
       }

@@ -9,6 +9,7 @@ public class App {
     static Cliente user;
     static Scanner teclado = new Scanner(System.in);
     static String nomeCliente = "";
+    static String cpf = "";
     public static ArrayList<Cliente> clientes = new ArrayList<>(100);
     public static ArrayList<Trecho> trechos = new ArrayList<>(100);
     public static ArrayList<Voo> voos = new ArrayList<>(100);
@@ -83,8 +84,11 @@ public class App {
         if (!clientes.isEmpty()) {
             nomeCliente = lerTeclado(
 
+                    "Digite o CPF do cliente que deseja consultar:     ", teclado);
+                    cpf = lerTeclado(
+
                     "Digite o nome do cliente que deseja consultar:     ", teclado);
-            if (user.verificaCliente(clientes, nomeCliente) != null) {
+            if (user.verificaCliente(clientes, nomeCliente, cpf) != null) {
                 System.out.println(user.toString());
             } else {
                 System.out.println("Cliente não encontrado!");
@@ -93,6 +97,16 @@ public class App {
             System.out.println("\nNão há clientes cadastrados.");
         }
     }
+
+    /**
+     * verifica o tamanho de um arraylist e retorna seu tamanho +1
+     * 
+     * @param necessario arraylist passado como parametro
+     * @return seu tamanho +1 para ser o id do objeto dentro do arraylist
+     */
+   
+   
+    
 
     /**
      * primeiro menu do programa
@@ -183,8 +197,9 @@ public class App {
                     case 1:
                         limparTela();
                         nomeCliente = lerTeclado("Insira o nome do novo cliente:    ", teclado);
+                        cpf = lerTeclado("Insira o CPF do novo cliente:    ", teclado);
                         if (nomeCliente != null && nomeCliente != "" && nomeCliente != " ") {
-                            user = new Cliente(nomeCliente);
+                            user = new Cliente(cpf, nomeCliente);
                             clientes.add(user);
                             System.out.println(
                                     "\nConfirmação de Cadastro:\n" + user.toString() + "\n\nCadastrado com sucesso!");
@@ -206,24 +221,26 @@ public class App {
                     case 3:
                         limparTela();
                         procurarCliente(nomeCliente);
-                        System.out.println("\nTotal de pontos: " + String.format("%.2f", user.calcularPontosValidos()));
+                        System.out.println("Total de pontos: " + user.calcularPontosValidos());
                         pausar(teclado);
                         break;
 
                     case 4:
                         limparTela();
                         try {
-
                             nomeCliente = lerTeclado("Digite o nome do cliente que deseja consultar:     ", teclado);
-                            user = user.verificaCliente(clientes, nomeCliente);
+                            cpf = lerTeclado("Digite o CPF do cliente que deseja consultar:     ", teclado);
+                            user = user.verificaCliente(clientes, nomeCliente, cpf);
                             if (user != null) {
-                                System.out.println("No momento o cadastro consta como: \n" + user.toString()
+                                System.out.println("\n\nNo momento o cadastro consta como: \n" + user.toString()
                                         + "\n\nGostaria de alterar a assinatura para qual tipo? ");
-                                System.out.println("1) PRATA ");
-                                System.out.println("2) PRETO");
-                                int opAssign = Integer.parseInt(teclado.nextLine());
+                                System.out.println("1) Prata ");
+                                System.out.println("2) Preto");
+                                System.out.println("0) Voltar");
+                                System.out.print("Digite sua opcao: ");
+                                opcao = Integer.parseInt(teclado.nextLine());
 
-                                switch (opAssign) {
+                                switch (opcao) {
                                     case 1:
                                         limparTela();
                                         user.mudarAssinatura(Acelerador.PRATA);
@@ -236,6 +253,9 @@ public class App {
                                         user.mudarAssinatura(Acelerador.PRETO);
                                         System.out.println("Assinatura alterada para PRETO!");
                                         pausar(teclado);
+
+                                    case 0:
+                                        menuCliente();
 
                                     default:
                                         limparTela();
@@ -309,7 +329,7 @@ public class App {
                             limparTela();
                             Bilhete novo = new Bilhete(TipoBilhete.COMUM);
                             // System.out.println(verificarListaClientes(nomeCliente));
-                            user = user.verificaCliente(clientes, nomeCliente);
+                            //user = user.verificaCliente(clientes, nomeCliente);
                             user.adicionarBilhete(novo);
                             novo.adicionarVoo(voos.get(opcao));
                             pausar(teclado);
@@ -317,7 +337,7 @@ public class App {
                         case 2:
                             limparTela();
                             // System.out.println(verificarListaClientes(nomeCliente));
-                            user = user.verificaCliente(clientes, nomeCliente);
+                           // user = user.verificaCliente(clientes, nomeCliente);
                             pausar(teclado);
                             break;
                         case 3:
