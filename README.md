@@ -1,5 +1,5 @@
 ![Open in Codespaces](https://classroom.github.com/assets/open-in-codespaces-abfff4d4e15f9e1bd8274d9a39a0befe03a0632bb0f153d0ec72ff541cedbe34.svg)
-# Sistema para uma empresa aérea
+# Xulambs Airlines
 
 * Visando aplicar conhecimentos adquiridos na disciplina de Programação Orientada por Objetos, ofertada na Pontífica Católica de Minas gerais, Campus São Gabriel em Belo Horizonte. O programa consiste em implementar um sistema de compra de bilhetes a partir da análise e driagramação do problema. Utilizando conceitos de POO, como Abstração, Interfaces, Especialização.
 
