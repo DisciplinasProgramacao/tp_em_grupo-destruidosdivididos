@@ -8,7 +8,6 @@ public class Voo {
   private Trecho trecho;
   private Calendar data;
   private double valor;
-  private String id;
   private int reservas;
 
   /**
@@ -17,8 +16,7 @@ public class Voo {
    * @param data A data do voo.
    * @param valor O valor do voo.
    */
-  public Voo(String id, Trecho novo, String novaData, double valor){
-    this.id = id;
+  public Voo(Trecho novo, String novaData, double valor){
     this.trecho = novo;
     this.data = tratarData(novaData);
     this.valor = valor;
@@ -32,7 +30,6 @@ public class Voo {
   public double valor(){
     return this.valor;
   }
-
 /**
  * cria um codigo a partir da data e do codigo de um trecho onde o voo vai passar
  * @return
@@ -40,39 +37,6 @@ public class Voo {
   public String criarCodigoVoo(){
     return this.trecho.getCodigo() + "-" + this.data();
   }
-
-
-  /**
-   * Cria o codigo do voo.
-   * @return codigo do voo.
-   */
-  public String criarCodigoVoo(){
-    return this.trecho.getCodigo() + "-" + this.data();
-  }
-
-  /**
-   * 
-   * @return A cidade de origem do voo
-   */
-  public Cidade origem(){
-    return this.trecho.origem();
-  }
-
-  /**
-   * 
-   * @return A quantidade de reservas do voo
-   */
-  public int reservas(){
-    return this.reservas;
-  }
-
-  /**
-   * Soma a quantidade de reservas a reserva do voo
-   */
-  public void adicionarReserva(){
-    this.reservas++;
-  }
-
 
   /**
    * Recebe a data como String, e trata para Calendar
@@ -96,8 +60,22 @@ public class Voo {
     return this.data;
   }
 
+  public Cidade origem(){
+    return this.trecho.origem();
+  }
+
+  public int reservas(){
+    return this.reservas;
+  }
+
   @Override
   public String toString(){
-    return "Data: " + Voo.formatoData.format(this.data.getTime()) + ", " + this.trecho.toString() + ", valor: " + this.valor;
+    return "Data: " + Voo.formatoData.format(this.data.getTime()) + ", " + this.trecho.toString();
+  }
+
+  @Override
+  public boolean equals(Object obj){
+    Voo outro = (Voo)(obj);
+    return this.trecho.equals(outro.trecho) && this.data.equals(outro.data);
   }
 }

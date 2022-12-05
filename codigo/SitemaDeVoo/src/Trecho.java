@@ -14,26 +14,30 @@ public class Trecho {
     this.codigo = codigo;
     this.origem = origem;
     this.destino = destino;
-
 }
-/**
- * @return o codigo do trecho
- */
-public String getCodigo(){
-  return this.codigo;
-}
+  /**
+   * @return o codigo do trecho
+   */
+  public String getCodigo(){
+    return this.codigo;
   }
 
   public Cidade origem(){
     return this.origem;
   }
 
-  public String getCodigo(){
-    return this.codigo;
+  public Cidade destino(){
+    return this.destino;
   }
 
   @Override
     public String toString() {
-        return "codigo do trecho: " + this.codigo + ", trajeto: " + this.origem + " / " + this.destino;
+        return "codigo do trecho: " + this.codigo + ", trajeto: " + this.origem + "/" + this.destino;
     }
+
+  @Override
+  public boolean equals(Object obj){
+    Trecho outro = (Trecho)(obj);
+    return this.codigo.equals(outro.codigo);
+  }
 }

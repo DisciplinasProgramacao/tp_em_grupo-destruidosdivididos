@@ -13,7 +13,7 @@ public class Funcionario {
         return this.nome;
     }
 
-     /**
+  /**
    * verificar se um funcionario existe cadastrado para trazer seus dados. IMPORTANTE:
    * Por mais que os nomes se repitam o foco é impedir a repetição da senha.
    * 
@@ -50,6 +50,7 @@ public class Funcionario {
     }
     return null;
   }
+
   @Override
   public String toString() {
     return "Nome do Funcionario: " + this.nome + ", Senha definida: " + this.senha + "\nAnote os dados por segurança.";

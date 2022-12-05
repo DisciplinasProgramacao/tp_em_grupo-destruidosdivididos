@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class CompanhiaAerea {
     private ArrayList<Voo> voos = new ArrayList<>(200);
@@ -22,6 +23,29 @@ public class CompanhiaAerea {
   }
 
   /**
+   * Percorre a lista cliente, somando o valor que ele gastou na companhia
+   */
+  public double calcularTotalArrecado(){
+    double total = this.clientes.stream()
+                              .mapToDouble(Cliente::calcularTotalDosBilhetes)
+                              .sum();
+    return total;
+  }
+
+  /**
+   * Método com erro. Problema não identificado. Precisa de atenção e documentação. 
+   * @param mes
+   * @return valor total de alguma coisa arrecadada no mês > pontos? bilhetes? financeiro?
+   */
+  public double calcularTotalArrecadoBaseadoNoMes(int mes){
+    double total = this.clientes.stream()
+                              .mapToDouble(c -> c.calcularTotalDosBilhetesBaseadoNoMes(mes))
+                              .sum();
+    return total;
+  }
+
+
+  /**
    * Adiciona novo cliente na lista de clientes da companhia
    * @param novo
    */
@@ -29,51 +53,24 @@ public class CompanhiaAerea {
     this.clientes.add(novo);
   }
 
-  /**
-   * Compara os clientes pela quantidade de pontos
-   * @return O cliente com a maior quantidade de pontos
-   */
-  public Cliente buscarClienteComMaisPontos(){
-    return this.clientes.stream()
-                        .max((c1, c2) -> c1.calcularPontosValidos() > c2.calcularPontosValidos()? 1 : -1)
-                        .get();
+  public Voo buscarVoo(Voo outro){
+    for(Voo voo : this.voos){
+      if(outro.equals(voo))
+        return voo;
+    }
+    return null;
   }
 
-  /**
-   * Filtra os voos com mais de cem reservas saindo de uma cidade em um dia especifico
-   * @param cidade A cidade
-   * @param dia O dia
-   * @return Uma lista com esses voos
-   */
-  public ArrayList<Voo> voosComMaisDeCemReservas(Cidade cidade, Calendar dia){
-    ArrayList<Voo> res = new ArrayList<>(this.voos.stream()
-                                                  .filter(voo -> voo.origem().igual(cidade))
-                                                  .filter(voo -> voo.data().equals(dia))
-                                                  .filter(voo -> voo.reservas() > 100)
-                                                  .toList());
-    return res;
+  public List<Voo> buscarVoosPorData(Calendar data){
+    return this.voos.stream()
+                    .filter(v -> v.data().equals(data))
+                    .toList();
   }
 
-  /**
-   * calcula o total gasto em bilhetes pelos clientes da companhia
-   */
-  public double calcularTotalArrecado(){
-
-    double total = this.clientes.stream()
-                              .mapToDouble(Cliente::calcularTotalGastoEmBilhetes)
-                              .sum();
-    return total;
-  }
-
-  /**
-   * calcula o total arrecadado de uma companha aerea em um mês específico
-   * @param mes o mes desejado
-   * @return o total arrecadado no mês pela companhia aerea
-   */
- public double calcularTotalArrecadadoBaseadoNoMes(int mes){
-    double total = this.clientes.stream()
-                                .mapToDouble(c -> c.calcularTotalGastoBilhetesBaseadoNoMes(mes))
-                                .sum();
-    return total;
+  public List<Voo> buscarVoosParaConexao(Calendar data, Cidade destino){
+    return this.voos.stream()
+                    .filter(v -> v.data().equals(data))
+                    .filter(v -> v.origem().igual(destino))
+                    .toList();
   }
 }

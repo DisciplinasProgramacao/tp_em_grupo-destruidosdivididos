@@ -98,16 +98,14 @@ public class Cliente {
   /**
    * Percorre a lista de bilhetes do cliente, somando o valor de cada bilhete
    */
-
   public double calcularTotalDosBilhetes() {
-
     double total = this.bilhetes.stream()
         .mapToDouble(Bilhete::calcularPreco)
         .sum();
     return total;
   }
-  public double calcularTotalDosBilhetesBaseadoNoMes(int mes) {
 
+  public double calcularTotalDosBilhetesBaseadoNoMes(int mes) {
     double total = this.bilhetes.stream()
         .filter(bilhete -> bilhete.getMonthDataVoo() == mes)
         .mapToDouble(Bilhete::calcularPreco)
@@ -122,7 +120,6 @@ public class Cliente {
   private void conferirBilhetes() {
     this.bilhetes.forEach(bilhete -> bilhete.atualizarEstado());
   }
- 
 
   @Override
   public String toString() {
