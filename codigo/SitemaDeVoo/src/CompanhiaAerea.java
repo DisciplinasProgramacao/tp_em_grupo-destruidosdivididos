@@ -67,10 +67,10 @@ public class CompanhiaAerea {
                     .toList();
   }
 
-  public List<Voo> buscarVoosParaConexao(Calendar data, Cidade destino){
+  public List<Voo> buscarVoosParaConexao(Calendar data, String destino){
     return this.voos.stream()
                     .filter(v -> v.data().equals(data))
-                    .filter(v -> v.origem().igual(destino))
+                    .filter(v -> v.origem().equals(destino))
                     .toList();
   }
 }

@@ -60,7 +60,7 @@ public class Voo {
     return this.data;
   }
 
-  public Cidade origem(){
+  public String origem(){
     return this.trecho.origem();
   }
 

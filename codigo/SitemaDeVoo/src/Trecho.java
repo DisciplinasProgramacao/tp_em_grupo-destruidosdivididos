@@ -1,8 +1,8 @@
 public class Trecho {
 
   private String codigo;
-  private Cidade origem;
-  private Cidade destino;
+  private String origem;
+  private String destino;
 
   /**
    * Cria um trecho que tem: um codigo único, uma origem e um destino.
@@ -10,7 +10,7 @@ public class Trecho {
    * @param origem O Aeroporto de origem.
    * @param destino O Aeroporto de destino.
    */
-  public Trecho (String codigo, Cidade origem, Cidade destino){
+  public Trecho (String codigo, String origem, String destino){
     this.codigo = codigo;
     this.origem = origem;
     this.destino = destino;
@@ -22,11 +22,11 @@ public class Trecho {
     return this.codigo;
   }
 
-  public Cidade origem(){
+  public String origem(){
     return this.origem;
   }
 
-  public Cidade destino(){
+  public String destino(){
     return this.destino;
   }
 
