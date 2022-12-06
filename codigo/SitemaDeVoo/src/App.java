@@ -1,3 +1,5 @@
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -27,6 +29,7 @@ public class App {
     static Funcionario func;
     static Scanner teclado = new Scanner(System.in);
     static String nomeCliente = "";
+    static Bilhete bilhete;
     static int cpf;
     static int senha;
     public static ArrayList<Cliente> clientes = new ArrayList<>(100);
@@ -71,6 +74,20 @@ public class App {
     public static void limparTela() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
+    }
+
+    public static void carregarClientes() throws FileNotFoundException{
+        Scanner arquivo = new Scanner(new File("clientes.txt"));
+
+        while(arquivo.hasNextLine()){
+
+            String dados[] = arquivo.nextLine().split(";");
+            String nome = dados[0];
+            int cpf = Integer.parseInt(dados[1]);
+
+            clientes.add(new Cliente(cpf, nome));
+        }
+        arquivo.close();
     }
 
     /**
@@ -449,16 +466,46 @@ public class App {
                         break;
 
                     case 4:
-                        /*
-                         * limparTela();
-                         * Bilhete novo = new Bilhete(TipoBilhete.COMUM);
-                         * // System.out.println(verificarListaClientes(nomeCliente));
-                         * // user = user.verificaCliente(clientes, nomeCliente);
-                         * user.adicionarBilhete(novo);
-                         * novo.adicionarVoo(voos.get(opcao));
-                         * pausar(teclado);
-                         * break;
-                         */
+                    limparTela();
+                    do{
+                        if(emUso.calcularPontosValidos() > 10500){
+                            bilhete = new Bilhete(TipoBilhete.FIDELIDADE);
+                            break;
+                        }
+                        System.out.println("Selecione o tipo: ");
+                        System.out.println("1 - BILHETE COMUM");
+                        System.out.println("2 - BILHETE PROMOCIONAL");
+                        System.out.println("0 - SAIR");
+                        opcao = tratarOpcao(teclado);
+                        if(opcao == 1){
+                            bilhete = new Bilhete(TipoBilhete.COMUM);
+                        }
+                        else if(opcao == 2){
+                            bilhete = new Bilhete(TipoBilhete.PROMOCIONAL);
+                        }
+                    }while(opcao != 0);
+                        System.out.println("Bilhete criado com sucesso\n");
+
+                    do{
+                        if(bilhete != null){
+                            int id = Integer.parseInt(lerTeclado("Digite o id do bilhete que deseja remover: ", teclado));
+                            String origem = lerTeclado("origem do voo: ", teclado);
+                            String destino = lerTeclado("destino do voo: ", teclado);
+                            Trecho trecho = new Trecho(Integer.toString(id), origem, destino);
+                            String data = lerTeclado("data do voo: ", teclado);
+                            Voo voo = new Voo(id, trecho, data, id);
+                            bilhete.adicionarVoo(voo);
+                            user.adicionarBilhete(bilhete);
+                        }
+                        else{
+                            System.out.println("Bilhete não criado.");
+                        }
+                        System.out.println("Deseja comprar outro voo?");
+                        System.out.println("1) Sim");
+                        System.out.println("0) Não");
+                        opcao = tratarOpcao(teclado);
+                    }while(opcao != 0);
+                    pausar(teclado);
                     case 5:
                         /*
                          * limparTela();
@@ -676,6 +723,17 @@ public class App {
                     .toList();
       }
 
+      public static int tratarOpcao(Scanner teclado){
+        int opcao;
+        try {
+            opcao = Integer.parseInt(lerTeclado("Digite a opção desejada: ", teclado));
+        } catch (NumberFormatException err) {
+            opcao = -1;
+        }
+        return opcao;
+    }
+
+
     /**
      * Apresenta opções referentes a bilhete para funcionário
      * > cadastra novo bilhete
@@ -693,8 +751,8 @@ public class App {
             System.out.println("==============================================\n");
             System.out.println("1) Cadastrar novo bilhete");
             System.out.println("2) Consultar voos de um bilhete");
-            System.out.println("4) Cadastrar novo Voo em bilhete");
-            System.out.println("5) Remover novo Voo em bilhete");
+            System.out.println("3) Cadastrar novo Voo em bilhete");
+            System.out.println("4) Remover um Voo em bilhete");
             System.out.println("0) Voltar");
             System.out.print("Digite a opção desejada:  ");
             /**
@@ -711,25 +769,63 @@ public class App {
                             break;
                         case 1:
                             limparTela();
-                            Bilhete novo = new Bilhete(TipoBilhete.COMUM);
-                            // System.out.println(verificarListaClientes(nomeCliente));
-                            // user = user.verificaCliente(clientes, nomeCliente);
-                            user.adicionarBilhete(novo);
-                            novo.adicionarVoo(voos.get(opcao));
+                            do{
+
+                                if(user.calcularPontosValidos() > 10500){
+                                    bilhete = new Bilhete(TipoBilhete.FIDELIDADE);
+                                    break;
+                                }
+                                System.out.println("Selecione o tipo: ");
+                                System.out.println("1 - BILHETE COMUM");
+                                System.out.println("2 - BILHETE PROMOCIONAL");
+                                System.out.println("0 - SAIR");
+                                opcao = tratarOpcao(teclado);
+                                if(opcao == 1){
+                                    bilhete = new Bilhete(TipoBilhete.COMUM);
+                                }
+                                else if(opcao == 2){
+                                    bilhete = new Bilhete(TipoBilhete.PROMOCIONAL);
+                                }
+                            }while(opcao != 0);
+                            System.out.println("Bilhete criado com sucesso");
                             pausar(teclado);
                             break;
                         case 2:
                             limparTela();
-                            // System.out.println(verificarListaClientes(nomeCliente));
-                            // user = user.verificaCliente(clientes, nomeCliente);
+                            if(bilhete != null){
+                                System.out.println(bilhete);
+                            }
+                            else{
+                                System.out.println("Bilhete não criado.");
+                            }
                             pausar(teclado);
                             break;
                         case 3:
                             limparTela();
+                            if(bilhete != null){
+                                int id = Integer.parseInt(lerTeclado("Digite o id do bilhete que deseja remover: ", teclado));
+                                String origem = lerTeclado("origem do voo: ", teclado);
+                                String destino = lerTeclado("destino do voo: ", teclado);
+                                Trecho trecho = new Trecho(Integer.toString(id), origem, destino);
+                                String data = lerTeclado("data do voo: ", teclado);
+                                Voo voo = new Voo(id, trecho, data, id);
+                                bilhete.adicionarVoo(voo);
+                                user.adicionarBilhete(bilhete);
+                            }
+                            else{
+                                System.out.println("Bilhete não criado.");
+                            }
                             pausar(teclado);
                             break;
                         case 4:
                             limparTela();
+                            if(bilhete != null){
+                                int id = Integer.parseInt(lerTeclado("Digite o id do bilhete que deseja remover: ", teclado));
+                                bilhete.removerVoo(new Voo(id, null, "", 0d));
+                            }
+                            else{
+                                System.out.println("Bilhete não criado.");
+                            }
                             pausar(teclado);
                             break;
                         default:

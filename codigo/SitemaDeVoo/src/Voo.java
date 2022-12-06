@@ -9,6 +9,7 @@ public class Voo {
   private Calendar data;
   private double valor;
   private int reservas;
+  private int id;
 
   /**
    * Cria um voo que tem: um trecho, uma data e um valor do voo.
@@ -16,11 +17,12 @@ public class Voo {
    * @param data A data do voo.
    * @param valor O valor do voo.
    */
-  public Voo(Trecho novo, String novaData, double valor){
+  public Voo(int id, Trecho novo, String novaData, double valor){
     this.trecho = novo;
     this.data = tratarData(novaData);
     this.valor = valor;
     this.reservas = 0;
+    this.id = id;
   }
 
   /**
@@ -76,6 +78,6 @@ public class Voo {
   @Override
   public boolean equals(Object obj){
     Voo outro = (Voo)(obj);
-    return this.trecho.equals(outro.trecho) && this.data.equals(outro.data);
+    return this.id == outro.id;
   }
 }
