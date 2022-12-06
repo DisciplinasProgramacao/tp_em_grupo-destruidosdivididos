@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 import java.util.Scanner;
 
 public class App {
@@ -652,6 +654,27 @@ public class App {
         } while (opcao != 0);
 
     }
+
+    public static Voo buscarVoo(Voo outro){
+        for(Voo voo : voos){
+          if(outro.equals(voo))
+            return voo;
+        }
+        return null;
+      }
+    
+      public static List<Voo> buscarVoosPorData(Calendar data){
+        return voos.stream()
+                    .filter(v -> v.data().equals(data))
+                    .toList();
+      }
+    
+      public static List<Voo> buscarVoosParaConexao(Calendar data, String destino){
+        return voos.stream()
+                    .filter(v -> v.data().equals(data))
+                    .filter(v -> v.origem().equals(destino))
+                    .toList();
+      }
 
     /**
      * Apresenta opções referentes a bilhete para funcionário
