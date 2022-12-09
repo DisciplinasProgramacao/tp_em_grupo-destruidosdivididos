@@ -12,8 +12,7 @@ public class Cliente implements Serializable{
   private Acelerador assinatura;
 
   /**
-   * Cria um cliente com um nome e um total de pontos que inicia em 0.
-   * 
+   * Cria um cliente com um nome.
    * @param nome O nome do Cliente.
    */
   public Cliente(String nome) {
@@ -58,6 +57,10 @@ public class Cliente implements Serializable{
     return (int)(pontos * this.assinatura.multiplicador());
   }
 
+  /**
+   * 
+   * @return os bilhetes de um ano pra cá
+   */
   public List<Bilhete> bilhetesUltimoAno(){
     Calendar dataLimite = Calendar.getInstance();
     dataLimite.add(Calendar.MONTH, -12);
@@ -66,6 +69,10 @@ public class Cliente implements Serializable{
                         .toList();
   }
 
+  /**
+   * 
+   * @return O total de pontos do ultimo ano
+   */
   public int calcularPontosUltimoAno(){
     int pontos =  this.bilhetesUltimoAno().stream()
                                           .mapToInt(Bilhete::calcularPontos)
@@ -74,10 +81,22 @@ public class Cliente implements Serializable{
     return (int)(pontos * this.assinatura.multiplicador());
   }
 
+  /**
+   * 
+   * @return Se já ganhou bilhete fidelidade
+   */
   public boolean jaGanhouBilheteFidelidade(){
-    return this.bilhetesUltimoAno().get(0).estado() == EstadoBilhete.EXPIRADO;
+    try{
+      return this.calcularPontosValidos() > 10500 && this.bilhetesUltimoAno().get(0).estado() == EstadoBilhete.EXPIRADO;
+    }catch(IndexOutOfBoundsException err){
+      return false;
+    }
   }
 
+  /**
+   * 
+   * @return Se o cliente está apto a um bilhete gratis
+   */
   public boolean bilheteGratis(){
     if(this.calcularPontosValidos() > Cliente.pontosParaBilheteGratis){
       this.expirarTodosBilhetes();
@@ -100,6 +119,11 @@ public class Cliente implements Serializable{
     return total;
   }
 
+  /**
+   * Calcula o total gasto em bilhetes em apenas 1 mes
+   * @param mes o mes
+   * @return o valor total
+   */
   public double calcularTotalDosBilhetesBaseadoNoMes(int mes) {
     double total = this.bilhetes.stream()
                                 .filter(bilhete -> bilhete.mesDoBilhete() == mes)

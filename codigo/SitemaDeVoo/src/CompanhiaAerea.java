@@ -1,5 +1,7 @@
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 public class CompanhiaAerea implements Serializable{
@@ -90,6 +92,18 @@ public class CompanhiaAerea implements Serializable{
     }catch(NoSuchElementException err){
       return null;
     }
+  }
+
+  public List<Voo> voosEmUmaData(Calendar data){
+    return this.voos.stream()
+                    .filter(v -> v.compararDataVoo(data))
+                    .toList();
+  }
+
+  public List<Voo> voosComMaisDeCemReservasEmUmaData(Calendar data){
+    return this.voosEmUmaData(data).stream()
+                                   .filter(v -> v.reservas() > 100)
+                                   .toList();
   }
 
   /**

@@ -7,6 +7,7 @@ public class Voo implements Serializable{
   private Trecho trecho;
   private Calendar data;
   private double valor;
+  private int reservas;
 
   /**
    * Cria um voo que tem: um trecho, uma data e um valor do voo.
@@ -18,6 +19,7 @@ public class Voo implements Serializable{
     this.trecho = novo;
     this.data = novaData;
     this.valor = valor;
+    this.reservas = 0;
   }
 
   /**
@@ -37,12 +39,20 @@ public class Voo implements Serializable{
    * @param outro o outro calendar
    * @return se são iguais
    */
-  private boolean compararCalendar(Calendar outro){
+  public boolean compararDataVoo(Calendar outro){
     boolean mesmoDia = this.data.get(Calendar.DAY_OF_MONTH) == outro.get(Calendar.DAY_OF_MONTH);
     boolean mesmoMes = this.data.get(Calendar.MONTH) == outro.get(Calendar.MONTH);
     boolean mesmoAno = this.data.get(Calendar.YEAR) == outro.get(Calendar.YEAR);
 
     return mesmoDia && mesmoMes && mesmoAno;
+  }
+
+  public void marcarReserva(){
+    this.reservas++;
+  }
+
+  public int reservas(){
+    return this.reservas;
   }
 
   @Override
@@ -53,6 +63,6 @@ public class Voo implements Serializable{
   @Override
   public boolean equals(Object obj){
     Voo outro = (Voo)(obj);
-    return this.trecho.equals(outro.trecho) && this.compararCalendar(outro.data);
+    return this.trecho.equals(outro.trecho) && this.compararDataVoo(outro.data);
   }
 }

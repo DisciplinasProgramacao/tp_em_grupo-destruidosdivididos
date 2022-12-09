@@ -70,6 +70,8 @@ public class App {
             novaData.set(Integer.parseInt(dados[2]), Integer.parseInt(dados[1]), Integer.parseInt(dados[0]));
         }catch(NullPointerException err){
             novaData = null;
+        }catch(ArrayIndexOutOfBoundsException err){
+            novaData = null;
         }
         return novaData;
     }
@@ -126,8 +128,9 @@ public class App {
         System.out.println("==========================");
         System.out.println("1 - Novo bilhete");
         System.out.println("2 - Escolher voo");
-        System.out.println("3 - Gerar bilhete");
-        System.out.println("4 - Alterar acelerador de pontos");
+        System.out.println("3 - Ver voos na data do bilhete");
+        System.out.println("4 - Gerar bilhete");
+        System.out.println("5 - Alterar acelerador de pontos");
         System.out.println("0 - Sair");
 
         return tratarOpcao(teclado);
@@ -250,6 +253,23 @@ public class App {
                         System.out.println(cliente);
                         pausar(teclado);
                         break;
+                        case 7:
+                        limparTela();
+                        textoData = lerTeclado("Digite a data desejada para o bilhete (dia/mês/ano):", teclado);
+                        data = tratarData(textoData);
+                        if(data != null && dataCerta(textoData, data)){
+                        List<Voo> lista = companhia.voosComMaisDeCemReservasEmUmaData(data);
+                            if(lista.size() > 0){
+                                System.out.println("VOOS COM MAIS DE CEM RESERVAS");
+                                System.out.println("====================================");
+                                lista.forEach(v -> System.out.println(v + "\n"));
+                            }
+                            else{
+                                System.out.println("SEM VOOS COM MAIS DE CEM RESERVAS NA DATA");
+                            }
+                        }
+                        pausar(teclado);
+                        break;
                         case 8:
                         limparTela();
                         System.out.println(companhia.calcularTotalArrecado());
@@ -338,6 +358,7 @@ public class App {
                             Voo novoVoo = companhia.buscarVoo(new Voo(new Trecho(origemDestino[0], origemDestino[1]), bilhete.data(), 0d));
                             if(novoVoo != null){
                                 bilhete.adicionarVoo(novoVoo);
+                                novoVoo.marcarReserva();
                                 System.out.println("Voo adicionado com sucesso");
                             }
                             else{
@@ -352,6 +373,23 @@ public class App {
                         case 3:
                         limparTela();
                         if(bilhete != null){
+                            System.out.println("Voos em: " + bilhete.data());
+                            List<Voo> voosNaData = companhia.voosEmUmaData(bilhete.data());
+                            if(voosNaData.size() > 0){
+                                voosNaData.forEach(v -> System.out.println(v + "\n"));
+                            }
+                            else{
+                                System.out.println("Sem voos para a data: " + bilhete.data());
+                            }
+                        }
+                        else{
+                            System.out.println("Primeiro crie o bilhete.");
+                        }
+                        pausar(teclado);
+                        break;
+                        case 4:
+                        limparTela();
+                        if(bilhete != null){
                             if(!bilhete.toString().equals("")){
                                 cliente.adicionarBilhete(bilhete);
                                 System.out.println(bilhete);
@@ -364,12 +402,11 @@ public class App {
                                 System.out.println("Adicione pelo menos um voo para gerar um bilhete.");
                         }
                         else{
-                            limparTela();
                             System.out.println("Primeiro crie o bilhete.");
                         }
                         pausar(teclado);
                         break;
-                        case 4:
+                        case 5:
                         int acelerador;
                         do{
                             limparTela();
