@@ -1,8 +1,8 @@
 public enum TipoBilhete {
     
-    COMUM("Bilhete Comum", 1, 1),
-    FIDELIDADE("Bilhete Fidelidade", 0, 0),
-    PROMOCIONAL("Bilhete Promocional", 0.6, 0.5);
+    COMUM("BILHETE COMUM", 1, 1),
+    FIDELIDADE("BILHETE FIDELIDADE", 0, 0),
+    PROMOCIONAL("BILHETE PROMOCIONAL", 0.6, 0.5);
 
     private final String tipo;
     private final double percentualPago;

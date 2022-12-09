@@ -1,36 +1,45 @@
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Locale;
-import java.util.TimeZone;
+import java.io.Serializable;
+import java.text.SimpleDateFormat;
 
-public class Bilhete {
+public class Bilhete implements Serializable{
+  private static final long serialVersionUID = -2322322139689390329L;
+  private static final SimpleDateFormat formatoData = new SimpleDateFormat("dd-MM-yyyy");
   private TipoBilhete tipoDoBilhete;
   private static final double acrescimoDeVooDireto = 0.1;
   private static final double percentualCobradoPorConexao = 0.5;
   private ArrayList<Voo> voos;
+  private Calendar data;
   private EstadoBilhete estado;
+  
 
   /**
    * Cria um bilhete com um tipo e o cliente que vai comprar o bilhete.
    * @param tipo Tipo de bilhete (Comum, Fidelidade ou Promocional).
    * @param cliente O cliente que está comprando o bilhete.
    */
-  public Bilhete(TipoBilhete tipo){
+  public Bilhete(TipoBilhete tipo, Calendar data){
     this.tipoDoBilhete = tipo;
     this.voos = new ArrayList<>();
+    this.data = data;
     this.estado = EstadoBilhete.VALIDO;
   }
 
   /**
    * Pega o mes da data do bilhete
-   * @return mes da data do voo
+   * @return mes da data do bilhete
    */
-  public int getMonthDataVoo() {
-    return this.voos.get(0).data().get(Calendar.MONTH);
+  public int mesDoBilhete() {
+    return this.data().get(Calendar.MONTH);
   }
 
+  /**
+   * 
+   * @return A data do bilhete
+   */
   public Calendar data(){
-    return this.voos.get(0).data();
+    return this.data;
   }
 
   /**
@@ -41,29 +50,44 @@ public class Bilhete {
     if(this.voos.size() == 1)
       return this.voos.get(0).valor() + this.voos.get(0).valor() * acrescimoDeVooDireto;
 
-    int maisCaro = this.vooMaisCaro();
-    double total = voos.get(maisCaro).valor();
+    else if(!this.voos.isEmpty()){
+      Voo maisCaro = this.vooMaisCaro();
+      double total = maisCaro.valor();
 
-    for(int i = 0; i < voos.size(); i++){
-      if(i != maisCaro)
-        total += voos.get(i).valor() * Bilhete.percentualCobradoPorConexao;
+      total += percentualCobradoPorConexao * this.voos.stream()
+                                                      .filter(v1 -> !v1.equals(maisCaro))
+                                                      .mapToDouble(Voo::valor)
+                                                      .sum();
+      return total;
     }
 
-    return total;
+    return 0d;
   }
 
+
+  /**
+   * Busca o voo mais caro
+   * @return O voo mais caro
+   */
+  private Voo vooMaisCaro(){
+    return this.voos.stream()
+                    .max((v1, v2) -> v1.valor() > v2.valor()? 1: -1)
+                    .get();
+  }
+
+  /**
+   * 
+   * @return O estado do bilhete
+   */
   public EstadoBilhete estado() {
     return this.estado;
   }
 
-
-  private int vooMaisCaro(){
-    int maisCaro = 0;
-    for(int i = 1; i < voos.size(); i++){
-      if(voos.get(i).valor() > voos.get(maisCaro).valor())
-        maisCaro = i;
-    }
-    return maisCaro;
+  /*
+   * Altera o estado do bilhete para expirado
+   */
+  public void expirarBilhete(){
+    this.estado = EstadoBilhete.EXPIRADO;
   }
 
   /**
@@ -90,15 +114,6 @@ public class Bilhete {
     return (int)(this.calcularPontosGeradosSemDesconto() * this.tipoDoBilhete.percentualPontos());
   }
 
-  public double calcularTotalBaseadoNoMes(int mes){
-    double total = this.voos.stream()
-                              .filter(voo -> voo.data().get(Calendar.MONTH) == mes)
-                              .mapToDouble(Voo::valor)
-                              .sum();
-    return total;
-  }
-
-
   /**
    * Adiciona um novo voo ao ArrayList de voos.
    * @param novo O voo que será adicionado.
@@ -108,36 +123,31 @@ public class Bilhete {
   }
 
   /**
-   * Remove um voo da lista de voos do bilhete
-   * @param desejado O voo que será removido
-   * @return true: se o voo existir na lista / false: caso não exista
-   */
-  public boolean removerVoo(Voo desejado){
-    return this.voos.remove(desejado);
-  }
-
-  /**
-   * Pega a dta de hoje e subtrai 12 meses, para validar se a data 
+   * Pega a data de hoje e subtrai 12 meses, para validar se a data 
    * do primeiro voo é posterior
    */
   public void atualizarEstado(){
-    Locale brasil = new Locale("pt", "BR");
-    Calendar dataLimite = Calendar.getInstance(TimeZone.getTimeZone("GMT-3"), brasil);
-    Calendar dataVoo = voos.get(0).data();
+    Calendar dataLimite = Calendar.getInstance();
     dataLimite.add(Calendar.MONTH, -12);
-    if (dataVoo.before(dataLimite)) {
+    if(this.data.before(dataLimite)) {
       this.estado = EstadoBilhete.EXPIRADO;
     }
   }
 
   @Override
   public String toString(){
-    StringBuilder bilhete = new StringBuilder();
+    StringBuilder bilhete = new StringBuilder("");
 
-    bilhete.append(this.tipoDoBilhete.toString() + ":\nValor: " + this.calcularPreco() + ", Pontos: " + this.calcularPontos() + "\n");
-    for(Voo voo : voos)
-      bilhete.append(voo.toString() + "\n");
+    if(!this.voos.isEmpty()){
+      bilhete.append("*****" + this.tipoDoBilhete.toString() + "*****" + ":\n");
+      bilhete.append("\nValor: " + this.calcularPreco() + ", Pontos: " + this.calcularPontos() + "\n");
+      bilhete.append("\nVOOS ATÉ O DESTINO FINAL - em: " + formatoData.format(this.data.getTime()) + "\n");
 
+      for(int i = 0; i < this.voos.size(); i++)
+        bilhete.append((i + 1) + " - " + this.voos.get(i).toString() + "\n");
+
+      bilhete.append("__________________________________");
+    }
     return bilhete.toString();
   }
 }

@@ -1,19 +1,22 @@
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
-public class Cliente {
+public class Cliente implements Serializable{
 
+  private static final long serialVersionUID = -1322322139592390329L;
+  private static final int pontosParaBilheteGratis = 10500;
   private String nome;
   private ArrayList<Bilhete> bilhetes;
   private Acelerador assinatura;
-  private int cpf;
 
   /**
    * Cria um cliente com um nome e um total de pontos que inicia em 0.
    * 
    * @param nome O nome do Cliente.
    */
-  public Cliente(int cpf, String nome) {
-    this.cpf = cpf;
+  public Cliente(String nome) {
     this.nome = nome;
     this.assinatura = Acelerador.INVALIDO;
     this.bilhetes = new ArrayList<>();
@@ -24,61 +27,16 @@ public class Cliente {
   }
 
   /**
-   * verificar se um cliente existe cadastrado para trazer seus dados. IMPORTANTE:
-   * Por mais que os nomes se repitam o foco é impedir a repetição do CPF.
-   * 
-   * @param clientes lista de clientes existentes
-   * @param nome     do buscado
-   * @return o cliente solicitado ou null
-   */
-  public Cliente validarCadastroCliente(ArrayList<Cliente> clientes, String nome, int cpf) {
-    if (!clientes.isEmpty()) {
-      for (Cliente cliente : clientes) {
-        if (cliente.cpf == this.cpf) {
-          return cliente;
-        }
-      }
-    }
-    return null;
-  }
-
-  /**
-   * Valida um usuario que está tentando logar no painel de cliente
-   * 
-   * @param clientes arraylist de clientes
-   * @param nome     nome inserido pelo usuario
-   * @param cpf      dado inserido pelo usuario
-   * @return cliente caso exista, ou null caso não exista ou a fila estaja vazia.
-   */
-  public Cliente validarLoginCliente(ArrayList<Cliente> clientes, String nome, int cpf) {
-    if (!clientes.isEmpty()) {
-      for (Cliente cliente : clientes) {
-        if (cliente.nome.equals(this.nome) && cliente.cpf == this.cpf) {
-          return cliente;
-        }
-      }
-    }
-    return null;
-  }
-
-  /**
    * Adiciona novo bilhete na lista de bilhetes do cliente
-   * 
    * @param novo
    */
   public void adicionarBilhete(Bilhete novo) {
-    int i = 0;
-    for(;i < this.bilhetes.size(); i++){
-      if(novo.data().after(this.bilhetes.get(i).data())){
-        break;
-      }
-    }
-    this.bilhetes.add(i, novo);
+    this.bilhetes.add(novo);
+    this.bilhetes.sort((b1, b2) -> b1.data().before(b2.data())? 1 : -1);
   }
 
   /**
    * Muda o nível da assinatura do cliente
-   * 
    * @param outra A nova assinatura
    */
   public void mudarAssinatura(Acelerador outra) {
@@ -88,17 +46,48 @@ public class Cliente {
   /**
    * Percorre a lista de bilhetes do cliente, somando os pontos dos bilhetes
    * válidos
-   * 
    * @return Os pontos válidos
    */
-  public int calcularPontosValidos() {
+  private int calcularPontosValidos() {
     this.conferirBilhetes();
     int pontos = this.bilhetes.stream()
-        .filter(bilhete -> bilhete.estado() == EstadoBilhete.VALIDO)
-        .mapToInt(Bilhete::calcularPontos)
-        .sum();
+                              .filter(bilhete -> bilhete.estado() == EstadoBilhete.VALIDO)
+                              .mapToInt(Bilhete::calcularPontos)
+                              .sum();
 
-    return (int) (pontos * this.assinatura.multiplicador());
+    return (int)(pontos * this.assinatura.multiplicador());
+  }
+
+  public List<Bilhete> bilhetesUltimoAno(){
+    Calendar dataLimite = Calendar.getInstance();
+    dataLimite.add(Calendar.MONTH, -12);
+    return this.bilhetes.stream()
+                        .filter(b -> b.data().after(dataLimite))
+                        .toList();
+  }
+
+  public int calcularPontosUltimoAno(){
+    int pontos =  this.bilhetesUltimoAno().stream()
+                                          .mapToInt(Bilhete::calcularPontos)
+                                          .sum();
+
+    return (int)(pontos * this.assinatura.multiplicador());
+  }
+
+  public boolean jaGanhouBilheteFidelidade(){
+    return this.bilhetesUltimoAno().get(0).estado() == EstadoBilhete.EXPIRADO;
+  }
+
+  public boolean bilheteGratis(){
+    if(this.calcularPontosValidos() > Cliente.pontosParaBilheteGratis){
+      this.expirarTodosBilhetes();
+      return true;
+    }
+    return false;
+  }
+
+  private void expirarTodosBilhetes(){
+    this.bilhetes.forEach(b -> b.expirarBilhete());
   }
 
   /**
@@ -106,16 +95,16 @@ public class Cliente {
    */
   public double calcularTotalDosBilhetes() {
     double total = this.bilhetes.stream()
-        .mapToDouble(Bilhete::calcularPreco)
-        .sum();
+                                .mapToDouble(Bilhete::calcularPreco)
+                                .sum();
     return total;
   }
 
   public double calcularTotalDosBilhetesBaseadoNoMes(int mes) {
     double total = this.bilhetes.stream()
-        .filter(bilhete -> bilhete.getMonthDataVoo() == mes)
-        .mapToDouble(Bilhete::calcularPreco)
-        .sum();
+                                .filter(bilhete -> bilhete.mesDoBilhete() == mes)
+                                .mapToDouble(Bilhete::calcularPreco)
+                                .sum();
     return total;
   }
 
@@ -128,7 +117,13 @@ public class Cliente {
   }
 
   @Override
+  public boolean equals(Object obj){
+    Cliente outro = (Cliente)(obj);
+    return this.nome.equals(outro.nome);
+  }
+
+  @Override
   public String toString() {
-    return "Nome do cliente: " + this.nome + ", assinatura ativa: " + this.assinatura.toString();
+    return "Nome do cliente: " + this.nome + "\n" + this.assinatura.toString() + "\nPontos acumulados no ultimo ano: " + this.calcularPontosUltimoAno();
   }
 }

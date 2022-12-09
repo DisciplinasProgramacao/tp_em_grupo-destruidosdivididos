@@ -1,43 +1,48 @@
-public class Trecho {
+import java.io.Serializable;
 
-  private String codigo;
-  private String origem;
-  private String destino;
+public class Trecho implements Serializable{
+
+  private static final long serialVersionUID = -2322322139979390329L;
+  private int codigo;
+  private Cidade origem;
+  private Cidade destino;
+  private static int proxCodigo = 1001;
 
   /**
    * Cria um trecho que tem: um codigo único, uma origem e um destino.
-   * @param codigo O codigo unico para criação do trecho.
    * @param origem O Aeroporto de origem.
    * @param destino O Aeroporto de destino.
    */
-  public Trecho (String codigo, String origem, String destino){
-    this.codigo = codigo;
+  public Trecho (Cidade origem, Cidade destino){
     this.origem = origem;
     this.destino = destino;
+    this.codigo = Trecho.proxCodigo;
+    Trecho.proxCodigo++;
 }
+
   /**
    * @return o codigo do trecho
    */
-  public String getCodigo(){
+  public int getCodigo(){
     return this.codigo;
   }
 
-  public String origem(){
+  public Cidade origem(){
     return this.origem;
   }
 
-  public String destino(){
+  public Cidade destino(){
     return this.destino;
   }
 
   @Override
     public String toString() {
-        return "codigo do trecho: " + this.codigo + ", trajeto: " + this.origem + "/" + this.destino;
+        return "Código - " + this.codigo + " (" + this.origem.nome() + " / " + this.destino.nome() + ")";
     }
 
   @Override
   public boolean equals(Object obj){
     Trecho outro = (Trecho)(obj);
-    return this.codigo.equals(outro.codigo);
+    return this.origem == outro.origem && this.destino == outro.destino;
   }
 }

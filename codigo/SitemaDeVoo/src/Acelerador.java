@@ -1,7 +1,7 @@
 public enum Acelerador {
-    INVALIDO("Sem multiplicador", 0, 0),
     PRATA("Prata", 1.25, 100),
-    PRETO("Preto", 1.5, 150);
+    PRETO("Preto", 1.5, 150),
+    INVALIDO("Sem multiplicador", 0, 0);
 
     private final String tipo;
     private final double multiplicador;
@@ -21,7 +21,11 @@ public enum Acelerador {
         return this.custoMensal;
     }
 
-    public String toString(){
+    public String tipo(){
         return this.tipo;
+    }
+
+    public String toString(){
+        return "Acelerador: " + this.tipo + " / Custo mensal de: " + this.custoMensal + " / Multiplicador: " + this.multiplicador;
     }
 }

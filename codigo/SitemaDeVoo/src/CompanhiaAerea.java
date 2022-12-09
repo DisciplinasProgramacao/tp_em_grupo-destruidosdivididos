@@ -1,12 +1,14 @@
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
+import java.util.NoSuchElementException;
 
-public class CompanhiaAerea {
+public class CompanhiaAerea implements Serializable{
+
+  private static final long serialVersionUID = -1322322139926390329L;
     private ArrayList<Voo> voos = new ArrayList<>(200);
     private ArrayList<Cliente> clientes = new ArrayList<>(200);
 
-    /**
+  /**
    * Cria uma compnhia aerea com um arraylist de clientes cadastrados e voos.
    */
   public CompanhiaAerea(){
@@ -27,8 +29,8 @@ public class CompanhiaAerea {
    */
   public double calcularTotalArrecado(){
     double total = this.clientes.stream()
-                              .mapToDouble(Cliente::calcularTotalDosBilhetes)
-                              .sum();
+                                .mapToDouble(Cliente::calcularTotalDosBilhetes)
+                                .sum();
     return total;
   }
 
@@ -39,9 +41,19 @@ public class CompanhiaAerea {
    */
   public double calcularTotalArrecadoBaseadoNoMes(int mes){
     double total = this.clientes.stream()
-                              .mapToDouble(c -> c.calcularTotalDosBilhetesBaseadoNoMes(mes))
-                              .sum();
+                                .mapToDouble(c -> c.calcularTotalDosBilhetesBaseadoNoMes(mes))
+                                .sum();
     return total;
+  }
+
+  /**
+   * 
+   * @return O cliente com mais pontos no ultimo ano
+   */
+  public Cliente clienteMaisPontosUltimoAno(){
+    return this.clientes.stream()
+                        .max((c1, c2) -> c1.calcularPontosUltimoAno() > c2.calcularPontosUltimoAno()? 1 : -1)
+                        .get();
   }
 
 
@@ -53,24 +65,46 @@ public class CompanhiaAerea {
     this.clientes.add(novo);
   }
 
+  /**
+   * 
+   * @return Uma String com os voos da lista
+   */
+  public String mostrarVoos(){
+    StringBuilder sb = new StringBuilder();
+    this.voos.forEach(v -> sb.append(v + "\n"));
+
+    return sb.toString();
+  }
+
+  /**
+   * busca um voo na lista
+   * @param outro o voo desejado
+   * @return o voo encontrado
+   */
   public Voo buscarVoo(Voo outro){
-    for(Voo voo : this.voos){
-      if(outro.equals(voo))
-        return voo;
+    try{
+      return this.voos.stream()
+                          .filter(v -> v.equals(outro))
+                          .findAny()
+                          .get();
+    }catch(NoSuchElementException err){
+      return null;
     }
-    return null;
   }
 
-  public List<Voo> buscarVoosPorData(Calendar data){
-    return this.voos.stream()
-                    .filter(v -> v.data().equals(data))
-                    .toList();
-  }
-
-  public List<Voo> buscarVoosParaConexao(Calendar data, String destino){
-    return this.voos.stream()
-                    .filter(v -> v.data().equals(data))
-                    .filter(v -> v.origem().equals(destino))
-                    .toList();
+  /**
+   * busca um cliente na lista
+   * @param outro o cliente desejado
+   * @return o cliente encontrado
+   */
+  public Cliente buscarCliente(Cliente outro){
+    try{
+      return this.clientes.stream()
+                          .filter(c -> c.equals(outro))
+                          .findAny()
+                          .get();
+    }catch(NoSuchElementException err){
+      return null;
+    }
   }
 }

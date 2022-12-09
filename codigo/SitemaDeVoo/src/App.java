@@ -1,50 +1,35 @@
-import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Scanner;
 
 public class App {
 
-    /**
-     * um cliente faz:
-     * compra bilhete
-     * adiciona os voos que ele quer
-     * precisa apenas ver os trechos para
-     * contrata acelerador de pts
-     * 
-     * empresa area
-     * tem acesso os bilhetes do cliente
-     * tem acesso à edição de trechos
-     * tem acesso à edição de voos
-     * 
-     */
+    public static final String nomeArquivo = "companhia-aerea.ser";
+    public static final DAO arquivo = new DAO(nomeArquivo);
+    public static ArrayList<Cidade> cidades;
+    public static ArrayList<Acelerador> aceleradores;
+    public static CompanhiaAerea companhia;
+
 
     /**
-     * variaveis, arquivos e arrays utilizadas ao longo do codigo
+     * pausa ate o usuario pressionar enter 
+     * @param teclado ler do teclado
      */
-    static int opcao = 0;
-    static Cliente user;
-    static Funcionario func;
-    static Scanner teclado = new Scanner(System.in);
-    static String nomeCliente = "";
-    static Bilhete bilhete;
-    static int cpf;
-    static int senha;
-    public static ArrayList<Cliente> clientes = new ArrayList<>(100);
-    public static ArrayList<Trecho> trechos = new ArrayList<>(100);
-    public static ArrayList<Voo> voos = new ArrayList<>(100);
-    public static ArrayList<Bilhete> bilhetes = new ArrayList<>(100);
-    public static ArrayList<Funcionario> funcionarios = new ArrayList<>(100);
-    public static final String arquivoDeTrechos = "trechosEVoos.txt";
+    public static void pausar(Scanner teclado) {
+        lerTeclado("\nTecle ENTER para continuar.", teclado);
+    }
 
     /**
-     * ==============================func=================
-     * COMPLEMENTOS
-     * ===============================================
-     * 
+     * limpa o console
      */
+    public static void limparTela() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+    }
 
     /**
      * le do teclado
@@ -59,793 +44,359 @@ public class App {
     }
 
     /**
-     * pausa ate o usuario pressionar enter
-     * 
-     * @param teclado ler do teclado
+     * Trata erros de exceção digitados
+     * @param teclado A entrada de dados
+     * @return O valor tratado
      */
-    public static void pausar(Scanner teclado) {
-        System.out.print("\nTecle ENTER para continuar. ");
-        teclado.nextLine();
-    }
-
-    /**
-     * limpa o console
-     */
-    public static void limparTela() {
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
-    }
-
-    public static void carregarClientes() throws FileNotFoundException{
-        Scanner arquivo = new Scanner(new File("clientes.txt"));
-
-        while(arquivo.hasNextLine()){
-
-            String dados[] = arquivo.nextLine().split(";");
-            String nome = dados[0];
-            int cpf = Integer.parseInt(dados[1]);
-
-            clientes.add(new Cliente(cpf, nome));
-        }
-        arquivo.close();
-    }
-
-    /**
-     * ===============================================
-     * VERIFICAÇÕES
-     * ===============================================
-     * 
-     */
-
-    /**
-     * 
-     * @param clientes > arraylist de clientes
-     * @param usuario  > cliente buscado
-     * @param cpf2     > cpf do cliente buscado
-     * @return > int 1 ou 0
-     */
-    public static int verificaEntradaDados(String usuario, int cpf) {
-        return ((usuario != null && usuario != "" && usuario != " ")
-                && (Integer.toString(cpf) != "" && Integer.toString(cpf) != " " && Integer.toString(cpf) != null))
-                        ? 1
-                        : 0;
-    }
-
-    /**
-     * @param clientes > arraylist de clientes
-     * @param usuario  > cliente buscado
-     * @param cpf2     > cpf do cliente buscado
-     * @param buscado  > objeto cliente que chama o método @validarCadastroCliente
-     *                 na classe do cliente que utiliza equals para comparar
-     *                 iformações de nome e cpf
-     * @return > int 1 ou -1
-     */
-    public static int verificaSeExisteCliente(ArrayList<Cliente> clientes, String usuario, int cpf, Cliente user) {
-        return user.validarCadastroCliente(clientes, nomeCliente.toUpperCase(), cpf) == null ? 1 : -1;
-    }
-
-    /**
-     * @param clientes > arraylist de funcionarios
-     * @param usuario  > funcionario buscado
-     * @param cpf2     > cpf do funcionario buscado
-     * @param buscado  > objeto funcionario que chama o
-     *                 método @validarCadastroCliente
-     *                 na classe do cliente que utiliza equals para comparar
-     *                 iformações de nome e cpf
-     * @return > int 1 ou -1
-     */
-    public static int verificaSeExisteFuncionario(ArrayList<Funcionario> funcs, String usuario, int senha,
-            Funcionario user) {
-        return user.validarCadastroFuncionario(funcs, nomeCliente.toUpperCase(), senha) == null ? 1 : -1;
-    }
-
-    /**
-     * Verifica se a lista de clientes não está vazia e se possui algum cliente
-     * cadastrado com os dados passados
-     * 
-     * @param nomeCliente nome do cliente buscado
-     * @return texto que avisa se encontrou ou não
-     */
-    public static String InfosCliente(String nomeCliente) {
-        if (!clientes.isEmpty()) {
-            switch (verificaSeExisteCliente(clientes, nomeCliente, cpf, user)) {
-                case 1:
-                    return user.toString();
-                case 2:
-                    return "\nCliente não encontrado!";
-            }
-        } else {
-            return "\nNão há clientes cadastrados.";
-        }
-        return "";
-    }
-
-    /**
-     * ===============================================
-     * MÉTODOS DE LOGIN DO CLIENTE
-     * ===============================================
-     * 
-     */
-
-    /**
-     * coleta nome e cpf do cliente e chama os metodos de verificação para entrar na
-     * area do cliente ou então criar um novo cliente a partir dos dados recebidos.
-     * O usuário pode cancelar a operação de criação de cliente novo se não quiser
-     * criá-lo.
-     */
-    public static String cadastroDeCliente(String nome, int cpf) {
-        user = new Cliente(cpf, nome.toUpperCase());
-        opcao = verificaEntradaDados(nome, cpf);
-        switch (opcao) {
-            case 0:
-                return ("\nOs campos nome e cpf não podem ficar em branco. Tente novamente.");
-            case 1:
-                opcao = verificaSeExisteCliente(clientes, nome, cpf, user);
-                switch (opcao) {
-                    case 1:
-                        System.out.print(
-                                "\nCliente não encontrado. Deseja cadastrar um novo cliente com estes dados? \n\n1.Sim / 2.Não:    ");
-                        opcao = Integer.parseInt(teclado.nextLine());
-                        switch (opcao) {
-                            case 1:
-                                user = user.validarCadastroCliente(clientes, nome, cpf);
-                                if (user == null) {
-                                    user = new Cliente(cpf, nome.toUpperCase());
-                                    clientes.add(user);
-
-                                    return ("\nConfirmação de Cadastro:\n" + user.toString()
-                                            + "\n\nCadastrado com sucesso!");
-                                } else {
-                                    return ("\nCliente com o mesmo CPF ja cadastrado!");
-                                }
-                            case 2:
-                                return ("\nOperação cancelada pelo Usuário.");
-                        }
-                    case -1:
-                        System.out.println("\nCliente com o mesmo CPF ja cadastrado! Verifique o nome de usuário.");
-                }
-                break;
-        }
-
-        return "";
-    }
-
-    /**
-     * Usado para validar um usuario e então decidir se cria um novo usuario ou
-     * notifica que o usuario stá errado com base no cpf
-     * 
-     * @return uma string
-     */
-    public static String fazerLoginCliente() {
-        nomeCliente = lerTeclado("Digite seu NOME:     ", teclado);
-        System.out.print("Digite seu CPF:      ");
-        cpf = Integer.parseInt(teclado.nextLine());
-        user = new Cliente(cpf, nomeCliente.toUpperCase());
-        opcao = verificaEntradaDados(nomeCliente, cpf);
-        switch (opcao) {
-            case 0:
-                return ("\nOs campos nome e cpf não podem ficar em branco. Tente novamente.");
-            case 1:
-                user = user.validarLoginCliente(clientes, nomeCliente, cpf);
-                if (user != null) {
-                    clienteLogado(user);
-                } else {
-                    return (cadastroDeCliente(nomeCliente, cpf));
-                }
-        }
-        return "";
-    }
-
-    /**
-     * ===============================================
-     * MÉTODOS DE LOGIN DO FUNCIONÁRIO
-     * ===============================================
-     * 
-     */
-
-    /**
-     * Usado para validar um usuario e então decidir se cria um novo usuario ou
-     * notifica que o usuario stá errado com base no cpf
-     * 
-     * @return uma string
-     */
-    public static String fazerLoginFuncionario() {
-        nomeCliente = lerTeclado("Digite seu NOME:     ", teclado);
-        System.out.print("Digite sua SENHA:     ");
-        senha = Integer.parseInt(teclado.nextLine());
-        func = new Funcionario(senha, nomeCliente.toUpperCase());
-        opcao = verificaEntradaDados(nomeCliente, senha);
-        switch (opcao) {
-            case 0:
-                return ("\nOs campos nome e senha não podem ficar em branco. Tente novamente.");
-            case 1:
-                func = func.validarLoginFuncionario(funcionarios, nomeCliente, senha);
-                if (func != null) {
-                    funcionarioLogado(func);
-                } else {
-                    return (cadastroDeFuncionario(nomeCliente, senha));
-                }
-        }
-        return "";
-    }
-
-    /**
-     * coleta nome e senha do cliente e chama os metodos de verificação para entrar
-     * na
-     * area do cliente ou então criar um novo cliente a partir dos dados recebidos.
-     * O usuário pode cancelar a operação de criação de cliente novo se não quiser
-     * criá-lo.
-     */
-    public static String cadastroDeFuncionario(String nome, int senha) {
-        func = new Funcionario(senha, nome.toUpperCase());
-        opcao = verificaEntradaDados(nome, cpf);
-        switch (opcao) {
-            case 0:
-                return ("\nOs campos nome e senha não podem ficar em branco. Tente novamente.");
-            case 1:
-                opcao = verificaSeExisteFuncionario(funcionarios, nome, senha, func);
-                switch (opcao) {
-                    case 1:
-                        System.out.print(
-                                "\nCliente não encontrado. Deseja cadastrar um novo cliente com estes dados? \n\n1.Sim / 2.Não:    ");
-                        opcao = Integer.parseInt(teclado.nextLine());
-                        switch (opcao) {
-                            case 1:
-                                func = func.validarCadastroFuncionario(funcionarios, nome, senha);
-                                if (func == null) {
-                                    func = new Funcionario(senha, nome.toUpperCase());
-                                    funcionarios.add(func);
-
-                                    return ("\nConfirmação de Cadastro:\n" + func.toString()
-                                            + "\n\nCadastrado com sucesso!");
-
-                                } else {
-                                    return ("\nCliente com o mesmo senha ja cadastrado!");
-                                }
-                            case 2:
-                                return ("\nOperação cancelada pelo Usuário.");
-                        }
-                    case -1:
-                        System.out.println("\nCliente com o mesmo senha ja cadastrado! Verifique o nome de usuário.");
-                }
-                break;
-        }
-
-        return "";
-    }
-
-    /**
-     * ===============================================
-     * MENUS
-     * ===============================================
-     * 
-     */
-
-    /**
-     * Menu principal do app
-     * 
-     * 
-     * @param teclado ler do teclado
-     * @return a opcao que o cliente digitou
-     */
-    public static void menuPrincipal() {
-        do {
-            limparTela();
-            System.out.println(" __________________________________________________");
-            System.out.println("|                                                  |");
-            System.out.println("|                 Xulambs Airlines                 |");
-            System.out.println("|          Voe conosco e viva uma aventura         |");
-            System.out.println("|__________________________________________________|\n\n");
-            System.out.println("=== Identifique-se ===");
-            System.out.println("1) Entrar como Cliente");
-            System.out.println("2) Entrar como Funcionário");
-            System.out.println("0) Sair");
-            System.out.print("Digite a opção desejada:  ");
-            /**
-             * Tratando erro execução NumberFormatException para caso de digitação de letras
-             * na entrada de numeros
-             */
-            try {
-                opcao = Integer.parseInt(teclado.nextLine());
-                switch (opcao) {
-                    case 0:
-                        limparTela();
-                        System.out.println("\n\nObrigado por viajar conosco.");
-                        System.exit(0);
-                        break;
-                    case 1:
-                        limparTela();
-                        System.out.println(fazerLoginCliente());
-                        pausar(teclado);
-                        menuPrincipal();
-                        break;
-                    case 2:
-                        limparTela();
-                        System.out.println(fazerLoginFuncionario());
-                        pausar(teclado);
-                        break;
-                    default:
-                        limparTela();
-                        System.out.println("Opção inválida. Tente novamente.");
-                        pausar(teclado);
-                        menuPrincipal();
-                        break;
-                }
-            } catch (NumberFormatException e) {
-                limparTela();
-                System.err.println("Formato de entrada não é válido. Tente novamente");
-                pausar(teclado);
-                menuPrincipal();
-            }
-        } while (opcao != 0);
-    }
-
-    /**
-     * Menu de acesso do cliente apos ele realizar login
-     * 
-     * @param emUso
-     */
-    public static void clienteLogado(Cliente emUso) {
-        do {
-            limparTela();
-            System.out.println("\nBEM-VINDO(A) " + emUso.nomeCliente());
-            System.out.println("==============================================\n");
-            System.out.println("1) Consultar total de bilhetes comprados");
-            System.out.println("2) Consultar pontos acumulados");
-            System.out.println("3) Contratar acelerador de pontos");
-            System.out.println("4) Comprar um bilhete");
-            System.out.println("5) Consultar voos de um bilhete");
-            System.out.println("0) Sair");
-            System.out.print("Digite a opção desejada:  ");
-            /**
-             * Tratando erro exceção NumberFormatException para caso de digitação de letras
-             * na entrada de numeros
-             */
-            try {
-                opcao = Integer.parseInt(teclado.nextLine());
-                switch (opcao) {
-                    case 0:
-                        limparTela();
-                        menuPrincipal();
-                        break;
-                    case 1:
-                        limparTela();
-                        System.out.println(emUso.toString() +
-                                "\nTotal de Bilhetes: " + String.format("%.2f", user.calcularTotalDosBilhetes()));
-                        pausar(teclado);
-                        break;
-
-                    case 2:
-                        limparTela();
-                        System.out.println(emUso.toString() + "\nTotal de pontos: " + user.calcularPontosValidos());
-                        pausar(teclado);
-                        break;
-
-                    case 3:
-                        limparTela();
-                        try {
-                            System.out.println("\n\nNo momento o cadastro consta como: \n" + user.toString()
-                                    + "\n\nGostaria de alterar a assinatura para qual tipo? ");
-                            System.out.println("1) Prata ");
-                            System.out.println("2) Preto");
-                            System.out.println("0) Voltar");
-                            System.out.print("Digite sua opcao: ");
-                            opcao = Integer.parseInt(teclado.nextLine());
-
-                            switch (opcao) {
-                                case 1:
-                                    limparTela();
-                                    emUso.mudarAssinatura(Acelerador.PRATA);
-                                    System.out.println("Assinatura alterada para PRATA!");
-                                    pausar(teclado);
-                                    break;
-
-                                case 2:
-                                    limparTela();
-                                    emUso.mudarAssinatura(Acelerador.PRETO);
-                                    System.out.println("Assinatura alterada para PRETO!");
-                                    pausar(teclado);
-                                    break;
-
-                                case 0:
-                                    menuPrincipal();
-                                    emUso = null;
-                                    break;
-
-                                default:
-                                    limparTela();
-                                    System.out.println("Opção inválida. Tente novamente");
-                                    pausar(teclado);
-                                    break;
-
-                            }
-                        } catch (NumberFormatException e) {
-                            limparTela();
-                            System.out.println("Formato de entrado não é válido. Tente novamente.");
-                        }
-                        break;
-
-                    case 4:
-                    limparTela();
-                    do{
-                        if(emUso.calcularPontosValidos() > 10500){
-                            bilhete = new Bilhete(TipoBilhete.FIDELIDADE);
-                            break;
-                        }
-                        System.out.println("Selecione o tipo: ");
-                        System.out.println("1 - BILHETE COMUM");
-                        System.out.println("2 - BILHETE PROMOCIONAL");
-                        System.out.println("0 - SAIR");
-                        opcao = tratarOpcao(teclado);
-                        if(opcao == 1){
-                            bilhete = new Bilhete(TipoBilhete.COMUM);
-                        }
-                        else if(opcao == 2){
-                            bilhete = new Bilhete(TipoBilhete.PROMOCIONAL);
-                        }
-                    }while(opcao != 0);
-                        System.out.println("Bilhete criado com sucesso\n");
-
-                    do{
-                        if(bilhete != null){
-                            int id = Integer.parseInt(lerTeclado("Digite o id do bilhete que deseja remover: ", teclado));
-                            String origem = lerTeclado("origem do voo: ", teclado);
-                            String destino = lerTeclado("destino do voo: ", teclado);
-                            Trecho trecho = new Trecho(Integer.toString(id), origem, destino);
-                            String data = lerTeclado("data do voo: ", teclado);
-                            Voo voo = new Voo(id, trecho, data, id);
-                            bilhete.adicionarVoo(voo);
-                            user.adicionarBilhete(bilhete);
-                        }
-                        else{
-                            System.out.println("Bilhete não criado.");
-                        }
-                        System.out.println("Deseja comprar outro voo?");
-                        System.out.println("1) Sim");
-                        System.out.println("0) Não");
-                        opcao = tratarOpcao(teclado);
-                    }while(opcao != 0);
-                    pausar(teclado);
-                    case 5:
-                        /*
-                         * limparTela();
-                         * // System.out.println(verificarListaClientes(nomeCliente));
-                         * // user = user.verificaCliente(clientes, nomeCliente);
-                         * pausar(teclado);
-                         * break;
-                         */
-                    default:
-                        limparTela();
-                        System.out.println("Opção inválida. Tente novamente.");
-                        pausar(teclado);
-                        limparTela();
-                        break;
-                }
-            } catch (NumberFormatException e) {
-                limparTela();
-                System.err.println("Formato de entrada não é válido. Tente novamente");
-                pausar(teclado);
-                clienteLogado(emUso);
-            }
-        } while (opcao != 0);
-
-    }
-
-    /**
-     * Menu de acesso do funcionário apos ele realizar login
-     */
-    public static void funcionarioLogado(Funcionario emUso) {
-        do {
-            limparTela();
-            System.out.println("\nBEM-VINDO(A) COLABORADOR " + emUso.nomeFuncionario());
-            System.out.println("==============================================\n");
-            System.out.println("1) Opcoes do cliente");
-            System.out.println("2) Opcoes de bilhete");
-            System.out.println("0) Sair");
-            System.out.print("Digite a opção desejada:  ");
-            /**
-             * Tratando erro execução NumberFormatException para caso de digitação de letras
-             * na entrada de numeros
-             */
-            try {
-                opcao = Integer.parseInt(teclado.nextLine());
-                switch (opcao) {
-                    case 0:
-                        limparTela();
-                        System.out.println("\n\nObrigado por viajar conosco.");
-                        System.exit(0);
-                        break;
-                    case 1:
-                        limparTela();
-                        menuCliente(emUso);
-                        break;
-                    case 2:
-                        limparTela();
-                        menuBilhete(emUso);
-                        break;
-                    default:
-                        limparTela();
-                        System.out.println("Opção inválida. Tente novamente.");
-                        pausar(teclado);
-                        menuPrincipal();
-                        break;
-                }
-            } catch (NumberFormatException e) {
-                limparTela();
-                System.err.println("Formato de entrada não é válido. Tente novamente");
-                pausar(teclado);
-                menuPrincipal();
-            }
-        } while (opcao != 0);
-    }
-
-    /**
-     * Apresenta opções relacionadas ao cliente para o funcionário
-     * > cadastro de cliente
-     * > consulta de bilhetes de um cliente
-     * > consulta de pontos de um cliente
-     * > contratação de acelerador de pontos para um cliente
-     * 
-     * @param teclado lê opcão desejada pelo usuário
-     */
-    public static void menuCliente(Funcionario emUso) {
-        do {
-            limparTela();
-            System.out.println("\nOPÇÕES REFERENTES AO CLIENTE");
-            System.out.println("==============================================\n");
-            System.out.println("1) Cadastrar novo cliente");
-            System.out.println("2) Consultar total de bilhetes");
-            System.out.println("3) Consultar pontos");
-            System.out.println("4) Contratar acelerador de pontos");
-            System.out.println("0) Voltar");
-            System.out.print("Digite a opção desejada:  ");
-            /**
-             * Tratando erro exceção NumberFormatException para caso de digitação de letras
-             * na entrada de numeros
-             */
-            try {
-                opcao = Integer.parseInt(teclado.nextLine());
-                switch (opcao) {
-                    case 0:
-                        limparTela();
-                        funcionarioLogado(func);
-                        ;
-                        break;
-                    case 1:
-                        limparTela();
-                        nomeCliente = lerTeclado("Digite o NOME do Cliente:     ", teclado);
-                        System.out.print("Digite o CPF do Cliente:      ");
-                        cpf = Integer.parseInt(teclado.nextLine());
-                        cadastroDeCliente(nomeCliente, cpf);
-                        pausar(teclado);
-                        break;
-                    case 2:
-                        limparTela();
-                        System.out.println(InfosCliente(nomeCliente) +
-                                "\nTotal de Bilhetes: " + String.format("%.2f", user.calcularTotalDosBilhetes()));
-                        pausar(teclado);
-                        break;
-
-                    case 3:
-                        limparTela();
-
-                        System.out.println(
-                                InfosCliente(nomeCliente) + "\nTotal de pontos: " + user.calcularPontosValidos());
-                        pausar(teclado);
-                        break;
-
-                    case 4:
-                        limparTela();
-                        try {
-                            nomeCliente = lerTeclado("Digite o NOME do cliente:     ", teclado);
-                            System.out.print("Digite o CPF do Cliente:      ");
-                            cpf = Integer.parseInt(teclado.nextLine());
-                            if (user.validarCadastroCliente(clientes, nomeCliente, cpf) != null) {
-                                System.out.println("\n\nNo momento o cadastro consta como: \n" + user.toString()
-                                        + "\n\nGostaria de alterar a assinatura para qual tipo? ");
-                                System.out.println("1) Prata ");
-                                System.out.println("2) Preto");
-                                System.out.println("0) Voltar");
-                                System.out.print("Digite sua opcao: ");
-                                opcao = Integer.parseInt(teclado.nextLine());
-
-                                switch (opcao) {
-                                    case 1:
-                                        limparTela();
-                                        user.mudarAssinatura(Acelerador.PRATA);
-                                        System.out.println("Assinatura alterada para PRATA!");
-                                        pausar(teclado);
-                                        break;
-
-                                    case 2:
-                                        limparTela();
-                                        user.mudarAssinatura(Acelerador.PRETO);
-                                        System.out.println("Assinatura alterada para PRETO!");
-                                        pausar(teclado);
-
-                                    case 0:
-                                        menuCliente(emUso);
-
-                                    default:
-                                        limparTela();
-                                        System.out.println("Opção inválida. Tente novamente");
-                                        pausar(teclado);
-                                        break;
-                                }
-                            } else if (user.validarCadastroCliente(clientes, nomeCliente, cpf) == null) {
-                                System.err.println(user.validarCadastroCliente(clientes, nomeCliente, cpf));
-                            } else {
-                                System.out.println("Cliente não encontrado!");
-                            }
-                            pausar(teclado);
-
-                        } catch (NumberFormatException e) {
-                            limparTela();
-                            System.out.println("Formato de entrado não é válido. Tente novamente.");
-                        }
-
-                        break;
-                    default:
-                        limparTela();
-                        System.out.println("Opção inválida. Tente novamente.");
-                        pausar(teclado);
-
-                        break;
-                }
-            } catch (NumberFormatException e) {
-                limparTela();
-                System.err.println("Formato de entrada não é válido. Tente novamente");
-                pausar(teclado);
-                menuCliente(emUso);
-            }
-        } while (opcao != 0);
-
-    }
-
-    public static Voo buscarVoo(Voo outro){
-        for(Voo voo : voos){
-          if(outro.equals(voo))
-            return voo;
-        }
-        return null;
-      }
-    
-      public static List<Voo> buscarVoosPorData(Calendar data){
-        return voos.stream()
-                    .filter(v -> v.data().equals(data))
-                    .toList();
-      }
-    
-      public static List<Voo> buscarVoosParaConexao(Calendar data, String destino){
-        return voos.stream()
-                    .filter(v -> v.data().equals(data))
-                    .filter(v -> v.origem().equals(destino))
-                    .toList();
-      }
-
-      public static int tratarOpcao(Scanner teclado){
+    public static int tratarOpcao(Scanner teclado){
         int opcao;
-        try {
-            opcao = Integer.parseInt(lerTeclado("Digite a opção desejada: ", teclado));
-        } catch (NumberFormatException err) {
+        try{
+            opcao = Integer.parseInt(lerTeclado("\nDigite a opção desejada:", teclado));
+        }catch(NumberFormatException err){
             opcao = -1;
         }
         return opcao;
     }
 
-
     /**
-     * Apresenta opções referentes a bilhete para funcionário
-     * > cadastra novo bilhete
-     * > consulta voos de um bilhete
-     * > inclui novo voo ao bilhete
-     * > remove tudos os bilhetes (isso exclui o bilhete mesmo?)
-     * 
-     * @param teclado lê opcão desejada pelo usuário
+     * Trata uma data vinda como string
+     * @param data A string
+     * @return A data em calendar
      */
-    public static void menuBilhete(Funcionario emUso) {
-        do {
-            limparTela();
-
-            System.out.println("\nOPÇÕES REFERENTES AO BILHETE");
-            System.out.println("==============================================\n");
-            System.out.println("1) Cadastrar novo bilhete");
-            System.out.println("2) Consultar voos de um bilhete");
-            System.out.println("3) Cadastrar novo Voo em bilhete");
-            System.out.println("4) Remover um Voo em bilhete");
-            System.out.println("0) Voltar");
-            System.out.print("Digite a opção desejada:  ");
-            /**
-             * Tratando erro excção NumberFormatException para caso de digitação de letras
-             * na entrada de numeros
-             */
-            try {
-                int opcao = Integer.parseInt(teclado.nextLine());
-                do {
-                    switch (opcao) {
-                        case 0:
-                            limparTela();
-                            menuPrincipal();
-                            break;
-                        case 1:
-                            limparTela();
-                            do{
-
-                                if(user.calcularPontosValidos() > 10500){
-                                    bilhete = new Bilhete(TipoBilhete.FIDELIDADE);
-                                    break;
-                                }
-                                System.out.println("Selecione o tipo: ");
-                                System.out.println("1 - BILHETE COMUM");
-                                System.out.println("2 - BILHETE PROMOCIONAL");
-                                System.out.println("0 - SAIR");
-                                opcao = tratarOpcao(teclado);
-                                if(opcao == 1){
-                                    bilhete = new Bilhete(TipoBilhete.COMUM);
-                                }
-                                else if(opcao == 2){
-                                    bilhete = new Bilhete(TipoBilhete.PROMOCIONAL);
-                                }
-                            }while(opcao != 0);
-                            System.out.println("Bilhete criado com sucesso");
-                            pausar(teclado);
-                            break;
-                        case 2:
-                            limparTela();
-                            if(bilhete != null){
-                                System.out.println(bilhete);
-                            }
-                            else{
-                                System.out.println("Bilhete não criado.");
-                            }
-                            pausar(teclado);
-                            break;
-                        case 3:
-                            limparTela();
-                            if(bilhete != null){
-                                int id = Integer.parseInt(lerTeclado("Digite o id do bilhete que deseja remover: ", teclado));
-                                String origem = lerTeclado("origem do voo: ", teclado);
-                                String destino = lerTeclado("destino do voo: ", teclado);
-                                Trecho trecho = new Trecho(Integer.toString(id), origem, destino);
-                                String data = lerTeclado("data do voo: ", teclado);
-                                Voo voo = new Voo(id, trecho, data, id);
-                                bilhete.adicionarVoo(voo);
-                                user.adicionarBilhete(bilhete);
-                            }
-                            else{
-                                System.out.println("Bilhete não criado.");
-                            }
-                            pausar(teclado);
-                            break;
-                        case 4:
-                            limparTela();
-                            if(bilhete != null){
-                                int id = Integer.parseInt(lerTeclado("Digite o id do bilhete que deseja remover: ", teclado));
-                                bilhete.removerVoo(new Voo(id, null, "", 0d));
-                            }
-                            else{
-                                System.out.println("Bilhete não criado.");
-                            }
-                            pausar(teclado);
-                            break;
-                        default:
-                            limparTela();
-                            System.out.println("Opção inválida. Tente novamente.");
-                            menuBilhete(emUso);
-                            break;
-                    }
-                } while (opcao != 0);
-            } catch (NumberFormatException e) {
-                limparTela();
-                System.err.println("Formato de entrada não é válido. Tente novamente");
-                pausar(teclado);
-                menuBilhete(emUso);
-            }
-        } while (opcao != 0);
+    public static Calendar tratarData(String data){
+        String []dados = data.split("/");
+        Calendar novaData = Calendar.getInstance();
+        try{
+            novaData.set(Integer.parseInt(dados[2]), Integer.parseInt(dados[1]), Integer.parseInt(dados[0]));
+        }catch(NullPointerException err){
+            novaData = null;
+        }
+        return novaData;
     }
 
-    public static void main(String[] args) {
-        limparTela();
-        menuPrincipal();
+    /**
+     * Compara se as datas são realmente iguais
+     * @param data a data em String
+     * @param novaData A data em calendar
+     * @return Se são iguais
+     */
+    public static boolean dataCerta(String data, Calendar novaData){
+        String []dados = data.split("/");
+        boolean diaCerto, mesCerto, anoCerto;
+
+        try{
+            diaCerto = novaData.get(Calendar.DAY_OF_MONTH) == Integer.parseInt(dados[0]);
+            mesCerto = novaData.get(Calendar.MONTH) == Integer.parseInt(dados[1]);
+            anoCerto = novaData.get(Calendar.YEAR) == Integer.parseInt(dados[2]);
+        }catch(NullPointerException err){
+            return false;
+        }
+        
+        return diaCerto && mesCerto && anoCerto;
+    }
+
+    public static int abrirMenuPrincipal(Scanner teclado){
+        System.out.println("MENU PRINCIPAL");
+        System.out.println("=================================");
+        System.out.println("1) Opções da Companhia");
+        System.out.println("2) Opções de Compra de Bilhete");
+        System.out.println("0) Sair");
+
+        return tratarOpcao(teclado);
+    }
+
+    public static int abrirMenuAdmin(Scanner teclado){
+        System.out.println("OPCOES DE ADMIN");
+        System.out.println("====================");
+        System.out.println("1 - Cadastrar cliente");
+        System.out.println("2 - Cadastrar voo");
+        System.out.println("3 - Ver voos cadastrados");
+        System.out.println("4 - Relatório de um cliente");
+        System.out.println("5 - Ver bilhetes de um cliente nos ultimos 12 meses");
+        System.out.println("6 - Ver cliente com mais pontos nos ultimos 12 meses");
+        System.out.println("7 - ");
+        System.out.println("8 - Ver total arrecadado pela companhia");
+        System.out.println("0 - Sair");
+
+        return tratarOpcao(teclado);
+    }
+
+    public static int abrirMenuCompraBilhetes(Scanner teclado){
+        System.out.println("COMPRAR BILHETE");
+        System.out.println("==========================");
+        System.out.println("1 - Novo bilhete");
+        System.out.println("2 - Escolher voo");
+        System.out.println("3 - Gerar bilhete");
+        System.out.println("4 - Alterar acelerador de pontos");
+        System.out.println("0 - Sair");
+
+        return tratarOpcao(teclado);
+    }
+
+    public static int abrirMenuCidades(Scanner teclado){
+        for(int i = 0; i < cidades.size(); i++)
+            System.out.println((i + 1) + " - " + cidades.get(i).nome());
+
+        return tratarOpcao(teclado) - 1;
+    }
+    
+    public static int abrirMenuAceleradores(Scanner teclado){
+        for(int i = 0; i < aceleradores.size(); i++)
+            System.err.println((i + 1) + " - " + aceleradores.get(i));
+
+        return tratarOpcao(teclado) - 1;
+    }
+
+    public static void main(String[] args) throws IOException, FileNotFoundException, ClassNotFoundException {
+        companhia = (CompanhiaAerea)(arquivo.lerObjeto());
+        cidades = new ArrayList<Cidade>(EnumSet.allOf(Cidade.class));
+        aceleradores = new ArrayList<Acelerador>(EnumSet.allOf(Acelerador.class));
+        Scanner teclado = new Scanner(System.in);
+        Bilhete bilhete = null;
+        int opcao;
+
+
+        do{
+            limparTela();
+            opcao = abrirMenuPrincipal(teclado);
+            
+            switch(opcao){
+                case 1:
+                int opcaoMenuAdmin;
+                do{
+                    limparTela();
+                    opcaoMenuAdmin = abrirMenuAdmin(teclado);
+                    switch(opcaoMenuAdmin){
+                        case 1:
+                        limparTela();
+                        String nome = lerTeclado("Digite o nome do cliente: ", teclado);
+                        Cliente novo = new Cliente(nome);
+                        companhia.adicionarCliente(novo);
+                        limparTela();
+                        System.out.println("Cliente cadastrado com sucesso.");
+                        pausar(teclado);
+                        break;
+                        case 2:
+                        limparTela();
+                        String textoData = lerTeclado("Digite a data desejada parra voo (dia/mês/ano):", teclado);
+                        Calendar data = tratarData(textoData);
+                        limparTela();
+                        if(data != null && dataCerta(textoData, data)){
+                            Cidade []origemDestino = new Cidade[2];
+                            System.out.println("CIDADE DE ORIGEM");
+                            System.out.println("========================");
+                            int cidade = abrirMenuCidades(teclado);
+                            origemDestino[0] = cidades.get(cidade);
+                            limparTela();
+                            System.out.println("CIDADE DE DESTINO");
+                            System.out.println("========================");
+                            cidade = abrirMenuCidades(teclado);
+                            origemDestino[1] = cidades.get(cidade);
+                            limparTela();
+                            Trecho trecho = new Trecho(origemDestino[0], origemDestino[1]);
+                            try{
+                                double valorVoo = Double.parseDouble(lerTeclado("Digite o valor do voo: ", teclado));
+                                Voo novoVoo = new Voo(trecho, data, valorVoo);
+                                companhia.adicionarVoo(novoVoo);
+                                System.out.println("Voo adicionado com sucesso");
+                            }catch(NumberFormatException err){
+                                System.out.println("Valor digitado inválido");
+                            }
+                        }
+                        else{
+                            System.out.println("Digite uma opção de data válida, no formato indicado.");
+                        }
+                        pausar(teclado);
+                        break;
+                        case 3:
+                        limparTela();
+                        System.out.println("VOOS DA COMPANHIA");
+                        System.out.println("=====================");
+                        System.out.println(companhia.mostrarVoos());
+                        pausar(teclado);
+                        break;
+                        case 4:
+                        limparTela();
+                        nome = lerTeclado("Digite o nome do cliente: ", teclado);
+                        Cliente cliente = companhia.buscarCliente(new Cliente(nome));
+                        if(cliente != null){
+                            limparTela();
+                            System.out.println(cliente);
+                        }
+                        else{
+                            limparTela();
+                            System.out.println("Cliente não cadastrado");
+                        }
+                        pausar(teclado);
+                        break;
+                        case 5:
+                        limparTela();
+                        nome = lerTeclado("Digite o nome do cliente: ", teclado);
+                        cliente = companhia.buscarCliente(new Cliente(nome));
+                        if(cliente != null){
+                            limparTela();
+                            List<Bilhete> bilhetesUltimoAno = cliente.bilhetesUltimoAno();
+                            bilhetesUltimoAno.forEach(b -> System.out.println(b + "\n"));
+                        }
+                        else{
+                            limparTela();
+                            System.out.println("Cliente não cadastrado");
+                        }
+                        pausar(teclado);
+                        break;
+                        case 6:
+                        limparTela();
+                        cliente = companhia.clienteMaisPontosUltimoAno();
+                        System.out.println(cliente);
+                        pausar(teclado);
+                        break;
+                        case 8:
+                        limparTela();
+                        System.out.println(companhia.calcularTotalArrecado());
+                        pausar(teclado);
+                        break;
+                        default:
+                        limparTela();
+                        break;
+                    }
+                }while(opcaoMenuAdmin != 0);
+                break;
+                case 2:
+                limparTela();
+                String nome = lerTeclado("Digite o nome do cliente: ", teclado);
+                Cliente cliente = companhia.buscarCliente(new Cliente(nome));
+                if(cliente == null){
+                    limparTela();
+                    System.out.println("Cliente não cadastrado");
+                    pausar(teclado);
+                    break;
+                }
+                pausar(teclado);
+                int opcaoMenuBilhete;
+                do{
+                    limparTela();
+                    opcaoMenuBilhete = abrirMenuCompraBilhetes(teclado);
+                    switch(opcaoMenuBilhete){
+                        case 1:
+                        limparTela();
+                        String textoData = lerTeclado("Digite a data desejada para o bilhete (dia/mês/ano):", teclado);
+                        Calendar data = tratarData(textoData);
+                        if(data != null && dataCerta(textoData, data)){
+                            int opcTipoBilhete;
+                            limparTela();
+                            if(cliente.bilheteGratis()){
+                                System.out.println("PARABÉNS!!!");
+                                System.out.println("======================================");
+                                System.out.println("Você tem direito a um bilhete gratis!!!");
+                                bilhete = new Bilhete(TipoBilhete.FIDELIDADE, data);
+                                pausar(teclado);
+                            }
+                            else{
+                                do{
+                                    System.out.println("TIPO DO BILHETE");
+                                    System.out.println("==========================");
+                                    System.out.println("1 - Bilhete comum");
+                                    System.out.println("2 - Bilhete Promocional");
+                                    opcTipoBilhete = tratarOpcao(teclado);
+                                    switch(opcTipoBilhete){
+                                        case 1:
+                                        bilhete = new Bilhete(TipoBilhete.COMUM, data);
+                                        break;
+                                        case 2:
+                                        bilhete = new Bilhete(TipoBilhete.PROMOCIONAL, data);
+                                        break;
+                                        default:
+                                        limparTela();
+                                        System.out.println("Escolha um tipo válido.");
+                                        pausar(teclado);
+                                        break;
+                                    }
+                                }while(opcTipoBilhete != 1 && opcTipoBilhete != 2);
+                                limparTela();
+                                System.out.println("Bilhete criado com sucesso.");
+                            }
+                        }
+                        else{
+                            System.out.println("Digite uma opção de data válida, no formato indicado.");
+                        }
+                        pausar(teclado);
+                        break;
+                        case 2:
+                        limparTela();
+                        if(bilhete != null){
+                            Cidade []origemDestino = new Cidade[2];
+                            System.out.println("CIDADE DE ORIGEM");
+                            System.out.println("========================");
+                            int cidade = abrirMenuCidades(teclado);
+                            origemDestino[0] = cidades.get(cidade);
+                            limparTela();
+                            System.out.println("CIDADE DE DESTINO");
+                            System.out.println("========================");
+                            cidade = abrirMenuCidades(teclado);
+                            origemDestino[1] = cidades.get(cidade);
+                            limparTela();
+                            Voo novoVoo = companhia.buscarVoo(new Voo(new Trecho(origemDestino[0], origemDestino[1]), bilhete.data(), 0d));
+                            if(novoVoo != null){
+                                bilhete.adicionarVoo(novoVoo);
+                                System.out.println("Voo adicionado com sucesso");
+                            }
+                            else{
+                                System.out.println("Voo não encontrado");
+                            }
+                        }
+                        else{
+                            System.out.println("Primeiro crie o bilhete.");
+                        }
+                        pausar(teclado);
+                        break;
+                        case 3:
+                        limparTela();
+                        if(bilhete != null){
+                            if(!bilhete.toString().equals("")){
+                                cliente.adicionarBilhete(bilhete);
+                                System.out.println(bilhete);
+                                pausar(teclado);
+                                bilhete = null;
+                                limparTela();
+                                System.out.println("Bilhete já gerado e adicionado aos bilhetes do cliente.");
+                            }
+                            else
+                                System.out.println("Adicione pelo menos um voo para gerar um bilhete.");
+                        }
+                        else{
+                            limparTela();
+                            System.out.println("Primeiro crie o bilhete.");
+                        }
+                        pausar(teclado);
+                        break;
+                        case 4:
+                        int acelerador;
+                        do{
+                            limparTela();
+                            System.out.println("ALTERAR ACELERADOR DE PONTOS");
+                            System.out.println("===============================");
+                            acelerador = abrirMenuAceleradores(teclado);
+                            System.out.println("0 - Cancelar");
+                        }while(acelerador < 0 && acelerador > aceleradores.size());
+                        limparTela();
+                        try{
+                            cliente.mudarAssinatura(aceleradores.get(acelerador));
+                            System.out.println("Assinatura alterada com sucesso.");
+                        }catch(IndexOutOfBoundsException err){
+                            System.out.println("Ação cancelada.");
+                        }
+                        pausar(teclado);
+                        break;
+                        default:
+                        limparTela();
+                        break;
+                    }
+                }while(opcaoMenuBilhete != 0);
+            }
+
+        }while(opcao != 0);
+
+        teclado.close();
+        arquivo.EscreverObjeto(companhia);
     }
 }
